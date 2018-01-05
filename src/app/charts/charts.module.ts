@@ -1,10 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { BarchartComponent } from './barchart/barchart.component';
+import { StackedBarchartComponent } from './stacked-barchart/stacked-barchart.component';
 
 @NgModule({
   imports: [
     CommonModule
   ],
-  declarations: []
+  declarations: [BarchartComponent, StackedBarchartComponent],
+  exports: [BarchartComponent]
 })
 export class ChartsModule { }
