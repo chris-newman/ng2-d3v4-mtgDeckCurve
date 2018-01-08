@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Input, ElementRef, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, ElementRef, ViewEncapsulation, keyframes } from '@angular/core';
 import * as d3 from 'd3';
 
 @Component({
@@ -68,6 +68,7 @@ export class BarchartComponent implements OnInit {
 
     // define X & Y domains
     let xDomain = this.data.map(d => d[0]);
+    console.log(this.data);
     let yDomain = [0, d3.max(this.data, d => d[1])];
 
     // create scales
@@ -110,6 +111,7 @@ export class BarchartComponent implements OnInit {
       .attr('y', d => this.yScale(d[1]))
       .attr('width', d => this.xScale.bandwidth())
       .attr('height', d => this.height - this.yScale(d[1]))
+      .style('stroke', 'white')
       .style('fill', (d, i) => this.colors(i));
 
     // add new bars

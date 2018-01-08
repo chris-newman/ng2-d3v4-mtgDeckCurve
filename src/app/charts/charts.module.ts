@@ -8,6 +8,6 @@ import { StackedBarchartComponent } from './stacked-barchart/stacked-barchart.co
     CommonModule
   ],
   declarations: [BarchartComponent, StackedBarchartComponent],
-  exports: [BarchartComponent]
+  exports: [BarchartComponent, StackedBarchartComponent]
 })
 export class ChartsModule { }
