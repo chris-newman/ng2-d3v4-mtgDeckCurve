@@ -18,7 +18,7 @@ import {
 @Component({
   selector: 'app-stacked-barchart',
   template: `
-  <div class="d3-chart" #chart></div>
+  <div class="d3-chart" #sbchart></div>
   `,
   styles: [
     `
@@ -39,7 +39,7 @@ import {
   encapsulation: ViewEncapsulation.None
 })
 export class StackedBarchartComponent implements OnInit {
-  @ViewChild('chart') private chartContainer: ElementRef;
+  @ViewChild('sbchart') private chartContainer: ElementRef;
   // TODO: abstraction between 2d array for d3 and a json structure for other components.
   @Input() private data: string;
   private margin: any = { top: 20, bottom: 20, left: 20, right: 20 };

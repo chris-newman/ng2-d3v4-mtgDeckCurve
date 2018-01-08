@@ -51,7 +51,7 @@ import { Component, OnInit } from '@angular/core';
               <td class="col-2">{{card.color}}</td>
               <td class="col-2">{{card.cost}}</td>
               <td class="col-3">{{card.type}}</td>
-              <td class="col-5"><span class="badge badge-pill badge-danger">X</span></td>
+              <td class="col-5"><a (click)="deleteCard(card)" href="javascript:void(0)" class="badge badge-danger">X</a></td>
             </tr>
           </tbody>
         </table>
@@ -62,7 +62,7 @@ import { Component, OnInit } from '@angular/core';
       
       <div class="col-6">
         <app-stacked-barchart *ngIf="deckStringData" [data]="deckStringData"></app-stacked-barchart>
-      </div>
+      </div> 
     </div>
   </div>
   <div class="card">;
@@ -258,6 +258,18 @@ export class HomeComponent implements OnInit {
   // ==================================================================================================
   // deck functions
   // ==================================================================================================
+
+  deleteCard(cardToDelete){
+    for(let i = 0; i < this.deck.length; i++){
+      let card = this.deck[i];
+      if(card.cost == cardToDelete.cost && card.type == cardToDelete.type && card.color == cardToDelete.color){
+        this.deck.splice(i, 1);
+        this.modData(card.cost, false);
+        break;
+      }
+    }
+    // this.updateData(this.deck);
+  }
 
   // return an array of objects that have color totals for each costOpt
   countColorTotals(){
