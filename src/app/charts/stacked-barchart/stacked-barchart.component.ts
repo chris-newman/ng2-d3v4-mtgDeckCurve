@@ -49,7 +49,7 @@ export class StackedBarchartComponent implements OnInit {
   // private x: ScaleBand<string>;
   // private y: ScaleLinear<number, number>;
   // private z: ScaleOrdinal<string, {}>;
-  private x: any;
+  private x :any;
   private y: any;
   private z: any;
   private xAxis: any;
@@ -57,30 +57,136 @@ export class StackedBarchartComponent implements OnInit {
   private parsedData:any;
 
 
-  private colorKeys: any;
-  private colors: any;
-  private xData: any;
+  private stack: any;
+  private color: any;
+  private names: any;
+  private alphabet: any;
   private svg: any;
 
   constructor() {}
 
   ngOnInit() {
-    this.xData = [
-      'white',
-      'black',
-      'green',
-      'red',
-      'blue',
-      'grey',
-      'multi' //TODO: change multi implementation
-    ];
-    console.log('stacked barchart on init');
-    this.createChart();
-    if (this.data) {
-      this.parsedData = d3.csvParse(this.data);
-      this.updateChart();
-    }
+    // this.xData = [
+    //   'white',
+    //   'black',
+    //   'green',
+    //   'red',
+    //   'blue',
+    //   'grey',
+    //   'multi' //TODO: change multi implementation
+    // ];
+    // console.log('stacked barchart on init');
+    // this.createChart();
+    // if (this.data) {
+    //   this.parsedData = d3.csvParse(this.data);
+    //   // maybe just pass in array of strings instead;
+    //   this.updateChart();
+    // }
+    let element = this.chartContainer.nativeElement;
+
+    // margin conventions as per https://bl.ocks.org/mbostock/3019563
+    var margin = this.margin;
+    var width = element.offsetWidth - this.margin.left - this.margin.right;
+    var height = element.offsetHeight - this.margin.top - this.margin.bottom;
+    
+    this.alphabet = "abcdef".split("");
+    this.names = ["Ann", "Bob", "Jean", "Chuck", "Denise", "Eric", "Frida", "Greg", "Hillary"];
+
+    var alphabet = this.alphabet;
+    var names = this.names;
+
+
+    this.svg = d3.select(element).append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    this.color = d3.scaleOrdinal(["#66c2a5","#fc8d62","#8da0cb","#e78ac3","#a6d854","#ffd92f"])
+
+    this.x = d3.scaleBand()
+        .rangeRound([0, width])
+        .domain(names)
+        .padding(.1);
+
+    this.y = d3.scaleLinear()
+        .rangeRound([height, 0]);
+
+    this.stack = d3.stack()
+        .keys(alphabet)
+        .order(d3.stackOrderNone)
+        .offset(d3.stackOffsetNone);
+
+    var self = this;
+    this.redraw(this.randomData(self), self);
+
+    var redraw = this.redraw;
+    var randomData = this.randomData;
+
+
+    d3.interval(function(){
+      redraw(randomData(self), self);  
+    }, 5000);
+
+    
   }
+
+  redraw(data, self){
+    var x = self.x;
+    var y = self.y;
+    var z = self.z;
+    var svg = self.svg;
+    var alphabet = self.alphabet;
+    var names = self.names;
+    var stack = self.stack;
+    var color = self.color;
+
+    // update the y scale
+    y.domain([0, d3.max(data.map(function(d){ return d.sum }))]);
+
+    // each data column (a.k.a "key" or "series") needs to be iterated over
+    alphabet.forEach(function(key, key_index){
+
+      var bar = svg.selectAll(".bar-" + key)
+          .data(stack(data)[key_index], function(d){ return d.data.name + "-" + key; });
+
+      bar
+        .transition()
+          .attr("x", function(d){ return x(d.data.name); })
+          .attr("y", function(d){ return y(d[1]); })
+          .attr("height", function(d){ return y(d[0]) - y(d[1]); });
+
+      bar.enter().append("rect")
+          .attr("class", function(d){ return "bar bar-" + key; })
+          .attr("x", function(d){ return x(d.data.name); })
+          .attr("y", function(d){ return y(d[1]); })
+          .attr("height", function(d){ return y(d[0]) - y(d[1]); })
+          .attr("width", x.bandwidth())
+          .attr("fill", function(d){ return color(key); })
+
+    });    
+
+  }
+
+  randomData(self){
+    var alphabet = self.alphabet;
+    var names = self.names;
+
+    return names.map(function(d){
+      var obj:any = {};
+      obj.name = d;
+      var nums = [];
+      alphabet.forEach(function(e){
+        var num = Math.floor(Math.random() * 10) + 1;
+        obj[e] = num;
+        nums.push(num);
+      });
+      obj.sum = d3.sum(nums);
+      return obj;
+    });
+  }
+
+
 
   ngOnChanges() {
     console.log('on changes');
@@ -91,122 +197,73 @@ export class StackedBarchartComponent implements OnInit {
     }
   }
 
-  createChart() {
-    console.log(this.data);
-    let element = this.chartContainer.nativeElement;
-
-    // margin conventions as per https://bl.ocks.org/mbostock/3019563
-    this.width = element.offsetWidth - this.margin.left - this.margin.right;
-    this.height = element.offsetHeight - this.margin.top - this.margin.bottom;
-
-    this.svg = d3
-      .select(element)
-      .append('svg')
-      .attr('width', element.offsetWidth)
-      .attr('height', element.offsetHeight);
-
-    this.chart = this.svg.append("g").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");    
-    
-    this.x = d3.scaleBand()
-    .rangeRound([0, this.width])
-    .paddingInner(0.05)
-    .align(0.1);
-
-    this.y = d3.scaleLinear()
-    .rangeRound([this.height, 0]);
-
-    this.z = d3.scaleOrdinal()
-    .range(["#fff", "#000", "green", "red", "blue", "grey", "purple"]);
-
-    this.parsedData = d3.csvParse(this.data);
-    //console.log(parsedData);
-
-    // var keys = this.parsedData.columns.slice(1);
-    this.x.domain(this.parsedData.map(function(d) { return d.cost; }));
-    this.y.domain([0, 30]).nice(); // hard coding upper limit of 30 for now
-
-    // x & y axis
-    this.xAxis = this.svg.append('g')
-      .attr('class', 'axis axis-x')
-      .attr('transform', `translate(${this.margin.left}, ${this.margin.top + this.height})`)
-      .call(d3.axisBottom(this.x));
-    this.yAxis = this.svg.append('g')
-      .attr('class', 'axis axis-y')
-      .attr('transform', `translate(${this.margin.left}, ${this.margin.top})`)
-      .call(d3.axisLeft(this.y));
-  }
-
-  updateChart() {
-    //update scales and axis
-    var keys = this.parsedData.columns.slice(1);
-    this.z.domain(keys);
-
-    // this.parsedData.forEach(element => {
-    //   console.log(element);
-    // });
-
-    this.x.domain(this.parsedData.map(function(d) { return d.cost; }));
-    this.y.domain([0, 30]).nice(); // hard coding upper limit of 30 for now
-
-    var stackData: any;
-    stackData = this.parsedData;
-    delete stackData.columns;
-    console.log(stackData);
-
-    var d3stackData = d3.stack().keys(keys)(stackData);
-
-      
-    var _z = this.z;
-    var _x = this.x;
-    var _y = this.y;
-
-    // select stacks
-    let update = this.chart.selectAll("stack")
-      .data(d3stackData);
-
-    console.log(update);
-
-    // remove exiting 
-    this.chart.selectAll("stack").data(d3stackData).exit().remove();
-    
-
-    // update existing
-    // this.chart.selectAll('g').transition()
-    // select all segments in stack
-    console.log(update.selectAll('segment'));
-
-    update.selectAll('segment')
-      .attr("x", function(d) { 
-        console.log(d); return _x(d[0].cost); })
-      .attr("y", function(d) { return _y(d[1]); })
-      .attr("height", function(d) { return _y(d[0]) - _y(d[1]); })
-      .attr("width", _x.bandwidth())
-      .style('fill', function(d,i) { return _z(i)});
-      
-
-    // add new bars
-    this.chart
-      .enter().append("stack")
-        .style("fill", function(d,i) { return _z(i); })
-      .selectAll("g")
-      .data(function(d) { return d; })
-      .enter().append("segment")
-        .attr("x", function(d) { return _x(d.data.cost); })
-        .attr("y", function(d) { return _y(d[1]); })
-        .attr("height", function(d) { return _y(d[0]) - _y(d[1]); })
-        .attr("width", _x.bandwidth());
-
-    // this.chart.append("g")
-    //   .attr("class", "axis")
-    //   .attr("transform", "translate(0," + this.height + ")")
-    //   .call(d3.axisBottom(x));
-
-    // this.chart.append("g")
-    //   .attr("class", "axis")
-    //   .call(d3.axisLeft(y).ticks(null, "s"))
-
+  updateChart(){
 
   }
+
+  // createChart() {
+  //   // console.log(this.data);
+  //   let element = this.chartContainer.nativeElement;
+
+  //   // margin conventions as per https://bl.ocks.org/mbostock/3019563
+  //   this.width = element.offsetWidth - this.margin.left - this.margin.right;
+  //   this.height = element.offsetHeight - this.margin.top - this.margin.bottom;
+
+  //   this.svg = d3
+  //     .select(element)
+  //     .append('svg')
+  //     .attr('width', element.offsetWidth)
+  //     .attr('height', element.offsetHeight);
+
+  //   this.chart = this.svg.append("g").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");    
+    
+  //   this.x = d3.scaleBand()
+  //   .rangeRound([0, this.width])
+  //   .paddingInner(0.05)
+  //   .align(0.1);
+
+  //   this.y = d3.scaleLinear()
+  //   .rangeRound([this.height, 0]);
+
+  //   this.z = d3.scaleOrdinal()
+  //   .range(["#fff", "#000", "green", "red", "blue", "grey", "purple"]);
+
+  //   this.parsedData = d3.csvParse(this.data);
+  //   //console.log(parsedData);
+
+  //   // var keys = this.parsedData.columns.slice(1);
+  //   this.x.domain(this.parsedData.map(function(d) { return d.cost; }));
+  //   this.y.domain([0, 30]).nice(); // hard coding upper limit of 30 for now
+
+  //   // x & y axis
+  //   this.xAxis = this.svg.append('g')
+  //     .attr('class', 'axis axis-x')
+  //     .attr('transform', `translate(${this.margin.left}, ${this.margin.top + this.height})`)
+  //     .call(d3.axisBottom(this.x));
+  //   this.yAxis = this.svg.append('g')
+  //     .attr('class', 'axis axis-y')
+  //     .attr('transform', `translate(${this.margin.left}, ${this.margin.top})`)
+  //     .call(d3.axisLeft(this.y));
+  // }
+
+
+
+  // updateChart() {
+  //   var x = this.x;
+  //   var y = this.y;
+  //   var z = this.z;
+  //   var keys = this.parsedData.columns.splice(1);
+
+  //   var stack = d3.stack().keys(keys);
+
+  // }
+  
+  
+
+
+
+
+
 }
 
 /*

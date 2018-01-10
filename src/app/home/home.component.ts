@@ -56,9 +56,9 @@ import { Component, OnInit } from '@angular/core';
           </tbody>
         </table>
       </div>
-      <div class="col-6">
-        <app-barchart *ngIf="chartData" [data]="chartData"></app-barchart>
-      </div>
+     <!-- // <div class="col-6">
+      //   <app-barchart *ngIf="chartData" [data]="chartData"></app-barchart>
+      // </div> -->
       
       <div class="col-6">
         <app-stacked-barchart *ngIf="deckStringData" [data]="deckStringData"></app-stacked-barchart>
@@ -121,7 +121,6 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     console.log('demo component');
     this.chartData = [];
-    this.stackedBarData = [];
     this.deck = [];
     this.chartIndices = ['Land', '1', '2', '3', '4', '5', '6', '7+'];
     this.colorOpts = [
@@ -197,16 +196,6 @@ export class HomeComponent implements OnInit {
       let el = this.chartIndices[i];
       this.chartData.push([el, 0]);
     }
-    // console.log(this.chartData);
-    
-    // let newStackedData = this.countColorTotals();
-
-    // console.log(newStackedData);
-
-    // for (let i = 0; i < newStackedData.length; i++){
-    //   this.stackedBarData.push(newStackedData[i]);
-    // }
-    // console.log(this.stackedBarData);
     this.deckStringData = this.deckToString();
   }
 
@@ -240,13 +229,6 @@ export class HomeComponent implements OnInit {
     }
 
     let newStackedData = this.countColorTotals();
-
-    // console.log(newStackedData);
-
-    // for (let i = 0; i < newStackedData.length; i++){
-    //   this.stackedBarData.push(newStackedData[i]);
-    // }
-    // console.log(this.stackedBarData);
   }
 
   // json output of deck for dev purposes
