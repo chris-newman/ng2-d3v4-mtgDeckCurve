@@ -44,6 +44,7 @@ export class StackedBarchartComponent implements OnInit {
   @Input() private data: any;
   @Input() private segments: Array<string>
   @Input() private xIndices: Array<string>;
+  @Input() private segmentColors: Array<string>;
 
   private margin: any = { top: 20, bottom: 20, left: 20, right: 20 };
   private chart: any;
@@ -100,7 +101,7 @@ export class StackedBarchartComponent implements OnInit {
 
     this.chart = this.svg.append("g").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");    
 
-    this.color = d3.scaleOrdinal(["white","black","green","red","blue","grey","khaki"]);
+    this.color = d3.scaleOrdinal(this.segmentColors);
 
     this.x = d3.scaleBand()
         .rangeRound([0, width])
@@ -162,7 +163,7 @@ export class StackedBarchartComponent implements OnInit {
           .attr("y", function(d){ return y(d[1]); })
           .attr("height", function(d){ return y(d[0]) - y(d[1]); })
           .attr("width", x.bandwidth())
-          .attr("fill", function(d){ return color(key); })
+          .attr("fill", function(d){ console.log(key); return color(key); })
 
       bar.exit().remove();
     });    

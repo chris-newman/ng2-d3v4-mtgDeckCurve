@@ -64,6 +64,7 @@ import { Component, OnInit } from '@angular/core';
         <app-stacked-barchart *ngIf="deckStringData" 
           [data]="deckStringData" 
           [segments]="colorOpts"
+          [segmentColors]="colorValues"
           [xIndices]="chartIndices"></app-stacked-barchart>
       </div> 
     </div>
@@ -113,6 +114,7 @@ export class HomeComponent implements OnInit {
   private selectedCardType: string;
   private cardCostOpts: Array<string>;
   private selectedCardCost: string;
+  private colorValues: Array<string>;
 
   private deck: Array<any>;
 
@@ -124,13 +126,7 @@ export class HomeComponent implements OnInit {
     this.deck = [];
     this.chartIndices = ['Land', '1', '2', '3', '4', '5', '6', '7+'];
     this.colorOpts = [
-      'white',
-      'black',
-      'green',
-      'red',
-      'blue',
-      'grey',
-      'multi' //TODO: change multi implementation
+      'white', 'black', 'green', 'red', 'blue', 'grey', 'multi' //TODO: change multi implementation
     ];
     this.cardTypeOpts = [
       'creature',
@@ -141,6 +137,8 @@ export class HomeComponent implements OnInit {
       'Land'
     ];
     this.cardCostOpts = ['1', '2', '3', '4', '5', '6', '7+'];
+    //this.colorValues = ["#f2f9f8", "#1b2223", "#397701", "#1f40df", "#cc931b", "#cbc2bf", "#6fc2de" ]; //"#cbc2bf",  grey
+    this.colorValues = ['#f2f9f8', '#1b2223', '#107c41', '#e6452d', '#137fb8', '#cbc2bf', '#c2b26b'];
     this.totalCards = 0;
     this.clearData();
   }
