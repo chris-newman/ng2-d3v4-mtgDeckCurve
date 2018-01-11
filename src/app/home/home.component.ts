@@ -61,12 +61,12 @@ import { Component, OnInit } from '@angular/core';
       // </div> -->
       
       <div class="col-6">
-        <app-stacked-barchart *ngIf="deckStringData" [data]="deckStringData"></app-stacked-barchart>
+        <app-stacked-barchart *ngIf="deckStringData" 
+          [data]="deckStringData" 
+          [segments]="colorOpts"
+          [xIndices]="chartIndices"></app-stacked-barchart>
       </div> 
     </div>
-  </div>
-  <div class="card">;
-    <pre><p>{{displayDeck()}}</p></pre>
   </div>
   
   
@@ -104,7 +104,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
   private chartData: Array<any>;
-  private deckStringData: string;
+  private deckStringData: any;
   private chartIndices: Array<any>;
   private totalCards: number;
   private colorOpts: Array<string>;
@@ -138,7 +138,7 @@ export class HomeComponent implements OnInit {
       'sorcery',
       'artifact',
       'enchantment',
-      'land'
+      'Land'
     ];
     this.cardCostOpts = ['1', '2', '3', '4', '5', '6', '7+'];
     this.totalCards = 0;
@@ -151,8 +151,8 @@ export class HomeComponent implements OnInit {
     if(this.deck.length >= 60) return;
     // push card data into deck
     let card: any = {};
-    // hard code rule that lands cost 0, will accept just type == 'land' && color
-    if (this.selectedCardType == 'land' && this.selectedColor) {
+    // hard code rule that Lands cost 0, will accept just type == 'Land' && color
+    if (this.selectedCardType == 'Land' && this.selectedColor) {
       card.cost = 0;
       card.color = this.selectedColor;
       card.type = this.selectedCardType;
@@ -179,7 +179,7 @@ export class HomeComponent implements OnInit {
     this.deck.push(card);
 
     // add to chart data
-    if (card.type == 'land') {
+    if (card.type == 'Land') {
       this.modData('Land', true);
     } else {
       this.modData(card.cost, true);
@@ -196,7 +196,8 @@ export class HomeComponent implements OnInit {
       let el = this.chartIndices[i];
       this.chartData.push([el, 0]);
     }
-    this.deckStringData = this.deckToString();
+    // switching to array of objects instead of csv string
+    this.deckStringData = this.countColorTotals();
   }
 
   // method for inserting or removing data into chart data structure
@@ -221,7 +222,9 @@ export class HomeComponent implements OnInit {
   // method required to update chart rendering due to onChanges implementation in chart component
   private updateData(newData) {
     this.chartData = [];
-    this.deckStringData = this.deckToString();
+    // switching to array of objects instead of csv string
+    this.deckStringData = this.countColorTotals();
+    //this.deckStringData = this.deckToString();
     
    
     for (let i = 0; i < newData.length; i++) {
@@ -265,9 +268,9 @@ export class HomeComponent implements OnInit {
 
   // given a cost (x-axis on chart), return a stackedBar object with the totals for each color
   countColorsForCost(cost){
-    // account for land/0cost
+    // account for Land/0cost
     let resultCost = cost;
-    if(cost == '0') resultCost = 'land';
+    if(cost == '0') resultCost = 'Land';
 
     // initialize result object
     let result: any = {cost: resultCost, white: 0, black: 0, green: 0, red: 0, blue: 0, grey: 0, multi: 0};
@@ -285,6 +288,7 @@ export class HomeComponent implements OnInit {
     let headerRow = "cost,white,black,green,red,blue,grey,multi\n";
     result += headerRow;
     let colorTotals = this.countColorTotals();
+    console.log(colorTotals);
     colorTotals.forEach(colorTotal => {
       // assuming that keys are still in order
       let row = "";
