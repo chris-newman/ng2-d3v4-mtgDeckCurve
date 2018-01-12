@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
 // import { BarchartComponent } from './charts/barchart/barchart.component';
 
 @Component({
@@ -13,9 +14,11 @@ import { Component, OnInit } from '@angular/core';
           <div class="row">
             <div class="col-2 form-group">
               <label for="color">Color:</label>
-              <select [(ngModel)]="selectedColor" name="color" class="form-control">
-                <option *ngFor="let i of colorOpts" [value]="i">{{i}}</option>
-              </select>
+              <!--// <select [(ngModel)]="selectedColor" name="color" class="form-control">
+              //   <option *ngFor="let i of colorOpts" [value]="i">{{i}}</option>
+              // </select> -->
+              <input id="typeahead-basic" type="text" class="form-control" [(ngModel)]="selectedColor" [ngbTypeahead]="search"/>
+
             </div>
     
             <div class="col-2 form-group">
@@ -146,7 +149,7 @@ export class HomeComponent implements OnInit {
   // add button fn
   public inputData() {
     console.log('input data');
-    if(this.deck.length >= 60) return;
+    // if(this.deck.length >= 60) return;
     // push card data into deck
     let card: any = {};
     // hard code rule that Lands cost 0, will accept just type == 'Land' && color
@@ -236,6 +239,15 @@ export class HomeComponent implements OnInit {
   displayDeck() {
     return this.deckToString();
   }
+
+
+  // form input functions
+  search = (text$: Observable<string>) =>
+    text$
+      .debounceTime(200)
+      .distinctUntilChanged()
+      .map(term => term.length < 2 ? []
+        : this.colorOpts.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10));
 
 
   // ==================================================================================================
