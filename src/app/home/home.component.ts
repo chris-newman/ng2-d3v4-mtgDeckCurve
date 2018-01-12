@@ -1,5 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/merge';
+import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/do';
+
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/distinctUntilChanged';
+import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
+import { Subject } from 'rxjs/Subject';
 // import { BarchartComponent } from './charts/barchart/barchart.component';
 
 @Component({
@@ -17,15 +26,36 @@ import { Observable } from 'rxjs/Observable';
               <!--// <select [(ngModel)]="selectedColor" name="color" class="form-control">
               //   <option *ngFor="let i of colorOpts" [value]="i">{{i}}</option>
               // </select> -->
-              <input id="typeahead-basic" type="text" class="form-control" [(ngModel)]="selectedColor" [ngbTypeahead]="search"/>
-
+              <input id="typeahead-basic" name="color" type="text" class="form-control" [(ngModel)]="selectedColor" [ngbTypeahead]="search"/>
+              <!--<input
+              id="typeahead-focus"
+              name="color"
+              type="text"
+              class="form-control"
+              [(ngModel)]="selectedColor"
+              [ngbTypeahead]="searchColorOpts"
+              (focus)="focus$.next($event.target.value)"
+              (click)="click$.next($event.target.value)"
+              #colorInput="ngbTypeahead"
+            />-->
             </div>
     
             <div class="col-2 form-group">
               <label for="cost">Cost:</label>
-              <select [(ngModel)]="selectedCardCost" name="cost" class="form-control">
+              <!--<select [(ngModel)]="selectedCardCost" name="cost" class="form-control">
                 <option *ngFor="let i of cardCostOpts" [value]="i">{{i}}</option>
-              </select>
+              </select> -->
+              <input
+              id="typeahead-focus"
+              name="cost"
+              type="text"
+              class="form-control"
+              [(ngModel)]="selectedCardCost"
+              [ngbTypeahead]="searchCostOpts"
+              (focus)="focus$.next($event.target.value)"
+              (click)="click$.next($event.target.value)"
+              #costInput="ngbTypeahead"
+            />
             </div>
     
             <div class="col-3 form-group">
@@ -240,15 +270,33 @@ export class HomeComponent implements OnInit {
     return this.deckToString();
   }
 
+  // typeahead code
+  @ViewChild('colorInput') colorInput: NgbTypeahead;
+  @ViewChild('costInput') costInput: NgbTypeahead;
 
-  // form input functions
+  focus$ = new Subject<string>();
+  click$ = new Subject<string>();
+
   search = (text$: Observable<string>) =>
     text$
       .debounceTime(200)
       .distinctUntilChanged()
-      .map(term => term.length < 2 ? []
+      .map(term => term.length < 0 ? []
         : this.colorOpts.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10));
 
+  searchColorOpts = (text$: Observable<string>) =>
+  text$
+    .debounceTime(200).distinctUntilChanged()
+    .merge(this.focus$.do(() => console.log(this.focus$)))
+    .merge(this.click$.filter(() => !this.colorInput.isPopupOpen() && !this.costInput.isPopupOpen()))
+    .map(term => (term === '' ? this.colorOpts : this.colorOpts.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1)).slice(0, 10));
+
+  searchCostOpts = (text$: Observable<string>) =>
+  text$
+    .debounceTime(200).distinctUntilChanged()
+    .merge(this.focus$)
+    .merge(this.click$.filter(() => !this.costInput.isPopupOpen()))
+    .map(term => (term === '' ? this.cardCostOpts : this.cardCostOpts.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1)).slice(0, 10));
 
   // ==================================================================================================
   // deck functions
