@@ -1,19 +1,6 @@
-import {
-  Component,
-  OnInit,
-  ViewEncapsulation,
-  ViewChild,
-  Input,
-  ElementRef
-} from '@angular/core';
+import {Component,OnInit,ViewEncapsulation,ViewChild,Input,ElementRef} from '@angular/core';
 import * as d3 from 'd3';
-import {
-  Selection,
-  ScaleLinear,
-  ScaleOrdinal,
-  EnterElement,
-  ScaleBand
-} from 'd3';
+import {ScaleLinear,ScaleOrdinal,ScaleBand} from 'd3';
 
 @Component({
   selector: 'app-stacked-barchart',
@@ -55,7 +42,6 @@ export class StackedBarchartComponent implements OnInit {
   private z: any;
   private xAxis: any;
   private yAxis: any;
-  private parsedData:any;
   private stack: any;
   private color: any;
   private svg: any;
@@ -86,7 +72,6 @@ export class StackedBarchartComponent implements OnInit {
     var margin = this.margin;
     var width = element.offsetWidth - this.margin.left - this.margin.right;
     var height = element.offsetHeight - this.margin.top - this.margin.bottom;
-
     this.height = height;
     this.width = width;
 
@@ -99,10 +84,8 @@ export class StackedBarchartComponent implements OnInit {
       .attr('width', element.offsetWidth)
       .attr('height', element.offsetHeight);
 
-    this.chart = this.svg.append("g").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");    
-
+    this.chart = this.svg.append("g").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
     this.color = d3.scaleOrdinal(this.segmentColors);
-
     this.x = d3.scaleBand()
         .rangeRound([0, width])
         .domain(xIndices)
@@ -116,54 +99,39 @@ export class StackedBarchartComponent implements OnInit {
         .keys(segments)
         .order(d3.stackOrderNone)
         .offset(d3.stackOffsetNone);
-    
   }
 
-  updateChart(data, self){
-    // solve scope issues
-    var x = self.x;
-    var y = self.y;
-    var z = self.z;
-    var svg = self.svg;
-    var segments = self.segments;
-    var xIndices = self.xIndices;
-    var stack = self.stack;
-    var color = self.color;
-    var chart = self.chart;
-    var margin = self.margin;
-    var height = self.height;
-    var width = self.width;
-
+  updateChart(data, self){ // need to pass in a reference to this to fix scoping issues
     // x & y axis
-    var xAxis = svg.append('g')
+    var xAxis = self.svg.append('g')
       .attr('class', 'axis axis-x')
-      .attr('transform', `translate(${margin.left}, ${margin.top + height})`)
-      .call(d3.axisBottom(x));
-    var yAxis = svg.append('g')
+      .attr('transform', `translate(${self.margin.left}, ${self.margin.top + self.height})`)
+      .call(d3.axisBottom(self.x));
+    var yAxis = self.svg.append('g')
       .attr('class', 'axis axis-y')
-      .attr('transform', `translate(${margin.left}, ${margin.top})`)
-      .call(d3.axisLeft(y));
+      .attr('transform', `translate(${self.margin.left}, ${self.margin.top})`)
+      .call(d3.axisLeft(self.y));
 
     // each data column (a.k.a "key" or "series") needs to be iterated over
-    segments.forEach(function(key, key_index){
+    self.segments.forEach(function(key, key_index){
 
       // TODO: switch out hard coded property for a passed in value
-      var bar = chart.selectAll(".bar-" + key)
-          .data(stack(data)[key_index], function(d){ return d.data.cost + "-" + key; });
+      var bar = self.chart.selectAll(".bar-" + key)
+          .data(self.stack(data)[key_index], function(d){ return d.data.cost + "-" + key; });
 
       bar
         .transition()
-          .attr("x", function(d){ return x(d.data.cost); })
-          .attr("y", function(d){ return y(d[1]); })
-          .attr("height", function(d){ return y(d[0]) - y(d[1]); });
+          .attr("x", function(d){ return self.x(d.data.cost); })
+          .attr("y", function(d){ return self.y(d[1]); })
+          .attr("height", function(d){ return self.y(d[0]) - self.y(d[1]); });
 
       bar.enter().append("rect")
           .attr("class", function(d){ return "bar bar-" + key; })
-          .attr("x", function(d){ return x(d.data.cost); })
-          .attr("y", function(d){ return y(d[1]); })
-          .attr("height", function(d){ return y(d[0]) - y(d[1]); })
-          .attr("width", x.bandwidth())
-          .attr("fill", function(d){ return color(key); })
+          .attr("x", function(d){ return self.x(d.data.cost); })
+          .attr("y", function(d){ return self.y(d[1]); })
+          .attr("height", function(d){ return self.y(d[0]) - self.y(d[1]); })
+          .attr("width", self.x.bandwidth())
+          .attr("fill", function(d){ return self.color(key); })
 
       bar.exit().remove();
     });    
