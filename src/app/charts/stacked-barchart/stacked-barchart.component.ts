@@ -163,7 +163,7 @@ export class StackedBarchartComponent implements OnInit {
           .attr("y", function(d){ return y(d[1]); })
           .attr("height", function(d){ return y(d[0]) - y(d[1]); })
           .attr("width", x.bandwidth())
-          .attr("fill", function(d){ console.log(key); return color(key); })
+          .attr("fill", function(d){ return color(key); })
 
       bar.exit().remove();
     });    

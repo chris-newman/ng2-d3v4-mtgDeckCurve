@@ -9,12 +9,13 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs/Subject';
+import { Deck } from '../shared/deck';
 // import { BarchartComponent } from './charts/barchart/barchart.component';
 
 @Component({
   selector: 'app-home',
   template: `
-  <h3>{{deck.length}}/60 Cards </h3>
+  <h3>{{deck.cards.length}}/60 Cards </h3>
   <div class="container-fluid">
     <div class="row">
       <div class="col-6">
@@ -80,7 +81,7 @@ import { Subject } from 'rxjs/Subject';
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let card of deck">
+            <tr *ngFor="let card of deck.cards">
               <td class="col-2">{{card.color}}</td>
               <td class="col-2">{{card.cost}}</td>
               <td class="col-3">{{card.type}}</td>
@@ -149,14 +150,14 @@ export class HomeComponent implements OnInit {
   private selectedCardCost: string;
   private colorValues: Array<string>;
 
-  private deck: Array<any>;
+  private deck: Deck;
 
   constructor() {}
 
   ngOnInit() {
     console.log('demo component');
     this.chartData = [];
-    this.deck = [];
+    this.deck = new Deck({});
     this.chartIndices = ['Land', '1', '2', '3', '4', '5', '6', '7+'];
     this.colorOpts = [
       'white', 'black', 'green', 'red', 'blue', 'grey', 'multi' //TODO: change multi implementation
@@ -207,7 +208,7 @@ export class HomeComponent implements OnInit {
   private addCard(card) {
     console.log('add card');
     // push card to deck (table)
-    this.deck.push(card);
+    this.deck.addCard(card);
 
     // add to chart data
     if (card.type == 'Land') {
@@ -221,7 +222,7 @@ export class HomeComponent implements OnInit {
   public clearData() {
     console.log('clear');
     this.chartData = [];
-    this.deck = [];
+    this.deck.reset();
     // start out with an empty curve
     for (let i = 0; i < this.chartIndices.length; i++) {
       let el = this.chartIndices[i];
@@ -233,6 +234,7 @@ export class HomeComponent implements OnInit {
 
   // method for inserting or removing data into chart data structure
   private modData(col, increase) {
+    if(!col) return;
     let newData = this.chartData;
     // find index to increment
     for (let i = 0; i < newData.length; i++) {
@@ -303,15 +305,17 @@ export class HomeComponent implements OnInit {
   // ==================================================================================================
 
   deleteCard(cardToDelete){
-    for(let i = 0; i < this.deck.length; i++){
-      let card = this.deck[i];
-      if(card.cost == cardToDelete.cost && card.type == cardToDelete.type && card.color == cardToDelete.color){
-        this.deck.splice(i, 1);
-        this.modData(card.cost, false);
-        break;
-      }
-    }
-    // this.updateData(this.deck);
+    //use deck function 
+    this.modData(this.deck.deleteCard(cardToDelete), false);
+    // for(let i = 0; i < this.deck.length; i++){
+    //   let card = this.deck[i];
+    //   if(card.cost == cardToDelete.cost && card.type == cardToDelete.type && card.color == cardToDelete.color){
+    //     this.deck.splice(i, 1);
+    //     this.modData(card.cost, false);
+    //     break;
+    //   }
+    // }
+    // // this.updateData(this.deck);
   }
 
   // return an array of objects that have color totals for each costOpt
@@ -319,26 +323,26 @@ export class HomeComponent implements OnInit {
     let result = [];
     let opts = ['0'].concat(this.cardCostOpts);
     opts.forEach(costOpt => {
-      result.push(this.countColorsForCost(costOpt));
+      result.push(this.deck.countColorsForCost(costOpt));
     });
     return result;
   }
 
   // given a cost (x-axis on chart), return a stackedBar object with the totals for each color
-  countColorsForCost(cost){
-    // account for Land/0cost
-    let resultCost = cost;
-    if(cost == '0') resultCost = 'Land';
+  // countColorsForCost(cost){
+  //   // account for Land/0cost
+  //   let resultCost = cost;
+  //   if(cost == '0') resultCost = 'Land';
 
-    // initialize result object
-    let result: any = {cost: resultCost, white: 0, black: 0, green: 0, red: 0, blue: 0, grey: 0, multi: 0};
+  //   // initialize result object
+  //   let result: any = {cost: resultCost, white: 0, black: 0, green: 0, red: 0, blue: 0, grey: 0, multi: 0};
 
-    // loop through all cards in the deck, if cost matches, increment color
-    this.deck.forEach(card => {
-      if(card.cost == cost) result[card.color]++;
-    });
-    return result;
-  }
+  //   // loop through all cards in the deck, if cost matches, increment color
+  //   this.deck.forEach(card => {
+  //     if(card.cost == cost) result[card.color]++;
+  //   });
+  //   return result;
+  // }
 
   // csv formatted string for d3
   deckToString(){
