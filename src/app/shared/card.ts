@@ -6,9 +6,12 @@ export class Card {
   // TODO: add more fields after integrating mtg api
 
   constructor(cardInfo:any) {
-    this.name = cardInfo.name;
-    this.type = cardInfo.type;
+    this.name = cardInfo.name || "";
     this.color = cardInfo.color;
     this.cost = cardInfo.cost;
+    this.type = cardInfo.type;
+    if(this.type == 'Land'){
+      this.cost = 0;
+    }
   }
 }

@@ -10,12 +10,13 @@ import 'rxjs/add/operator/distinctUntilChanged';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs/Subject';
 import { Deck } from '../shared/deck';
+import { Card } from '../shared/card';
 // import { BarchartComponent } from './charts/barchart/barchart.component';
 
 @Component({
   selector: 'app-home',
   template: `
-  <h3>{{deck.cards.length}}/60 Cards </h3>
+  <h3>{{deck.getLength()}}/60 Cards </h3>
   <div class="container-fluid">
     <div class="row">
       <div class="col-6">
@@ -90,13 +91,10 @@ import { Deck } from '../shared/deck';
           </tbody>
         </table>
       </div>
-     <!-- // <div class="col-6">
-      //   <app-barchart *ngIf="chartData" [data]="chartData"></app-barchart>
-      // </div> -->
       
       <div class="col-6">
-        <app-stacked-barchart *ngIf="deckStringData" 
-          [data]="deckStringData" 
+        <app-stacked-barchart *ngIf="chartData" 
+          [data]="chartData" 
           [segments]="colorOpts"
           [segmentColors]="colorValues"
           [xIndices]="chartIndices"></app-stacked-barchart>
@@ -138,8 +136,7 @@ import { Deck } from '../shared/deck';
   ]
 })
 export class HomeComponent implements OnInit {
-  private chartData: Array<any>;
-  private deckStringData: any;
+  private chartData: any;
   private chartIndices: Array<any>;
   private totalCards: number;
   private colorOpts: Array<string>;
@@ -150,129 +147,63 @@ export class HomeComponent implements OnInit {
   private selectedCardCost: string;
   private colorValues: Array<string>;
 
-  private deck: Deck;
+  public deck: Deck;
 
   constructor() {}
 
   ngOnInit() {
-    console.log('demo component');
-    this.chartData = [];
     this.deck = new Deck({});
-    this.chartIndices = ['Land', '1', '2', '3', '4', '5', '6', '7+'];
-    this.colorOpts = [
-      'white', 'black', 'green', 'red', 'blue', 'grey', 'multi' //TODO: change multi implementation
-    ];
-    this.cardTypeOpts = [
-      'creature',
-      'instant',
-      'sorcery',
-      'artifact',
-      'enchantment',
-      'Land'
-    ];
-    this.cardCostOpts = ['1', '2', '3', '4', '5', '6', '7+'];
-    //this.colorValues = ["#f2f9f8", "#1b2223", "#397701", "#1f40df", "#cc931b", "#cbc2bf", "#6fc2de" ]; //"#cbc2bf",  grey
+    this.chartIndices = ['Land', '1', '2', '3', '4', '5', '6', '7+']
+    this.colorOpts = this.deck.colorOpts;
+    this.cardTypeOpts = this.deck.typeOpts;
+    this.cardCostOpts = this.deck.costOpts;
     this.colorValues = ['#f2f9f8', '#1b2223', '#107c41', '#e6452d', '#137fb8', '#cbc2bf', '#c2b26b'];
-    this.totalCards = 0;
     this.clearData();
+  }
+
+  // ==================================================================================================
+  // button functions
+  // ==================================================================================================
+  // x (pill) button fn
+  deleteCard(cardToDelete){
+    this.deck.deleteCard(cardToDelete);
+    this.updateChartData();
   }
 
   // add button fn
   public inputData() {
     console.log('input data');
     // if(this.deck.length >= 60) return;
-    // push card data into deck
-    let card: any = {};
-    // hard code rule that Lands cost 0, will accept just type == 'Land' && color
-    if (this.selectedCardType == 'Land' && this.selectedColor) {
-      card.cost = 0;
-      card.color = this.selectedColor;
-      card.type = this.selectedCardType;
-      this.addCard(card);
-      // translate deck
+    let input: any = {};
+    input.cost = this.selectedCardCost;
+    input.color = this.selectedColor;
+    input.type = this.selectedCardType;
 
-    } else if (
-      this.selectedCardCost &&
-      this.selectedCardType &&
-      this.selectedColor
-    ) {
-      card.cost = this.selectedCardCost;
-      card.color = this.selectedColor;
-      card.type = this.selectedCardType;
-      this.addCard(card);
-      // translate deck
-    }
-  }
-
-  // add card to table and chart data
-  private addCard(card) {
-    console.log('add card');
+    let card = new Card(input);
     // push card to deck (table)
     this.deck.addCard(card);
-
     // add to chart data
-    if (card.type == 'Land') {
-      this.modData('Land', true);
-    } else {
-      this.modData(card.cost, true);
-    }
+    this.updateChartData();
   }
 
   // reset button fn
   public clearData() {
     console.log('clear');
-    this.chartData = [];
     this.deck.reset();
-    // start out with an empty curve
-    for (let i = 0; i < this.chartIndices.length; i++) {
-      let el = this.chartIndices[i];
-      this.chartData.push([el, 0]);
-    }
-    // switching to array of objects instead of csv string
-    this.deckStringData = this.countColorTotals();
+    this.chartData = this.deck.countColorTotals();
   }
 
-  // method for inserting or removing data into chart data structure
-  private modData(col, increase) {
-    if(!col) return;
-    let newData = this.chartData;
-    // find index to increment
-    for (let i = 0; i < newData.length; i++) {
-      if (newData[i][0] == col) {
-        console.log('found');
-        if (increase) {
-          newData[i][1]++;
-        } else {
-          if (newData[i][1] > 0) {
-            newData[i][1]--;
-          }
-        }
-      }
-    }
-    this.updateData(newData);
-  }
-
+  // ==================================================================================================
+  // helper functions
+  // ==================================================================================================
   // method required to update chart rendering due to onChanges implementation in chart component
-  private updateData(newData) {
-    this.chartData = [];
-    // switching to array of objects instead of csv string
-    this.deckStringData = this.countColorTotals();
-    //this.deckStringData = this.deckToString();
-    
-   
-    for (let i = 0; i < newData.length; i++) {
-      this.chartData.push(newData[i]);
-    }
-
-    let newStackedData = this.countColorTotals();
+  private updateChartData() {
+    this.chartData = this.deck.countColorTotals();
   }
 
-  // json output of deck for dev purposes
-  displayDeck() {
-    return this.deckToString();
-  }
-
+  // ==================================================================================================
   // typeahead code
+  // ==================================================================================================
   @ViewChild('colorInput') colorInput: NgbTypeahead;
   @ViewChild('costInput') costInput: NgbTypeahead;
 
@@ -299,76 +230,5 @@ export class HomeComponent implements OnInit {
     .merge(this.focus$)
     .merge(this.click$.filter(() => !this.costInput.isPopupOpen()))
     .map(term => (term === '' ? this.cardCostOpts : this.cardCostOpts.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1)).slice(0, 10));
-
-  // ==================================================================================================
-  // deck functions
-  // ==================================================================================================
-
-  deleteCard(cardToDelete){
-    //use deck function 
-    this.modData(this.deck.deleteCard(cardToDelete), false);
-    // for(let i = 0; i < this.deck.length; i++){
-    //   let card = this.deck[i];
-    //   if(card.cost == cardToDelete.cost && card.type == cardToDelete.type && card.color == cardToDelete.color){
-    //     this.deck.splice(i, 1);
-    //     this.modData(card.cost, false);
-    //     break;
-    //   }
-    // }
-    // // this.updateData(this.deck);
-  }
-
-  // return an array of objects that have color totals for each costOpt
-  countColorTotals(){
-    let result = [];
-    let opts = ['0'].concat(this.cardCostOpts);
-    opts.forEach(costOpt => {
-      result.push(this.deck.countColorsForCost(costOpt));
-    });
-    return result;
-  }
-
-  // given a cost (x-axis on chart), return a stackedBar object with the totals for each color
-  // countColorsForCost(cost){
-  //   // account for Land/0cost
-  //   let resultCost = cost;
-  //   if(cost == '0') resultCost = 'Land';
-
-  //   // initialize result object
-  //   let result: any = {cost: resultCost, white: 0, black: 0, green: 0, red: 0, blue: 0, grey: 0, multi: 0};
-
-  //   // loop through all cards in the deck, if cost matches, increment color
-  //   this.deck.forEach(card => {
-  //     if(card.cost == cost) result[card.color]++;
-  //   });
-  //   return result;
-  // }
-
-  // csv formatted string for d3
-  deckToString(){
-    let result = "";
-    let headerRow = "cost,white,black,green,red,blue,grey,multi\n";
-    result += headerRow;
-    let colorTotals = this.countColorTotals();
-    console.log(colorTotals);
-    colorTotals.forEach(colorTotal => {
-      // assuming that keys are still in order
-      let row = "";
-      const lastIndex = Object.keys(colorTotal).length - 1;
-      let i = 0;
-      for (const key in colorTotal) {
-        
-        if (colorTotal.hasOwnProperty(key)) {
-          const element = colorTotal[key];
-          row += element;
-          if(i !== lastIndex) row+=',';
-        }
-        i++;
-      }
-      row += '\n';
-      result += row;
-    });
-    return result;
-  }
 
 }

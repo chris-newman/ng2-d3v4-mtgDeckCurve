@@ -1,16 +1,23 @@
 import { Card } from "./card";
 
 export class Deck {
+  costOpts: any = ['1', '2', '3', '4', '5', '6', '7+'];
+  colorOpts: any = ['white', 'black', 'green', 'red', 'blue', 'grey', 'multi'];
+  typeOpts: any = ['creature','instant','sorcery','artifact','enchantment','Land'];
   name: string;
-  cards: Array<Card>;
-
+  private cards: Array<Card>;
 
   constructor(deckInfo:any) {
     this.name = deckInfo.name;
     this.cards = deckInfo.cards;
   }
 
+  getLength(){
+    return this.cards.length;
+  }
+
   addCard(card){
+    // TODO: validation
     this.cards.push(card);
   }
 
@@ -26,7 +33,27 @@ export class Deck {
     // this.updateData(this.deck);
   }
 
-  countColorsForCost(cost){
+  reset(){
+    this.cards = new Array<Card>();
+  }
+
+  // TODO: save fn
+  save(){
+    // use local storage
+  }
+  
+  // rename to getD3ObjectArray
+  countColorTotals(){
+    let result = [];
+    let opts = ['0', '1', '2', '3', '4', '5', '6', '7+'];
+    opts.forEach(costOpt => {
+      result.push(this.countColorsForCost(costOpt));
+    });
+    return result;
+  }
+
+  // helper function for countColorTotals
+  private countColorsForCost(cost){
     // account for Land/0cost
     let resultCost = cost;
     if(cost == '0') resultCost = 'Land';
@@ -41,7 +68,30 @@ export class Deck {
     return result;
   }
 
-  reset(){
-    this.cards = new Array<Card>();
+  // csv formatted string for d3
+  toString(){
+    let result = "";
+    let headerRow = "cost,white,black,green,red,blue,grey,multi\n";
+    result += headerRow;
+    let colorTotals = this.countColorTotals();
+    console.log(colorTotals);
+    colorTotals.forEach(colorTotal => {
+      // assuming that keys are still in order
+      let row = "";
+      const lastIndex = Object.keys(colorTotal).length - 1;
+      let i = 0;
+      for (const key in colorTotal) {
+        
+        if (colorTotal.hasOwnProperty(key)) {
+          const element = colorTotal[key];
+          row += element;
+          if(i !== lastIndex) row+=',';
+        }
+        i++;
+      }
+      row += '\n';
+      result += row;
+    });
+    return result;
   }
 }
