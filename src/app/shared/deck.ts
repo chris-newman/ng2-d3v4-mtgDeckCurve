@@ -21,18 +21,18 @@ export class Deck {
     this.cards.push(card);
   }
 
+  // delete a card from the deck, return the deleted card or null if not found
   deleteCard(cardToDelete){
     for(let i = 0; i < this.cards.length; i++){
       let card = this.cards[i];
       if(card.cost == cardToDelete.cost && card.type == cardToDelete.type && card.color == cardToDelete.color){
         return this.cards.splice(i, 1);
-        // this.modData(card.cost, false);
       }
     }
     return null;
-    // this.updateData(this.deck);
   }
 
+  // reset the deck to 0 cards
   reset(){
     this.cards = new Array<Card>();
   }
@@ -42,8 +42,8 @@ export class Deck {
     // use local storage
   }
   
-  // rename to getD3ObjectArray
-  countColorTotals(){
+  // returns an array of objects for the d3 stacked barchart
+  makeD3ObjectArray(){
     let result = [];
     let opts = ['0', '1', '2', '3', '4', '5', '6', '7+'];
     opts.forEach(costOpt => {
@@ -52,7 +52,7 @@ export class Deck {
     return result;
   }
 
-  // helper function for countColorTotals
+  // helper function for makeD3ObjectArray
   private countColorsForCost(cost){
     // account for Land/0cost
     let resultCost = cost;
@@ -68,20 +68,18 @@ export class Deck {
     return result;
   }
 
-  // csv formatted string for d3
+  // csv formatted string representation of deck
   toString(){
     let result = "";
     let headerRow = "cost,white,black,green,red,blue,grey,multi\n";
     result += headerRow;
-    let colorTotals = this.countColorTotals();
+    let colorTotals = this.makeD3ObjectArray();
     console.log(colorTotals);
     colorTotals.forEach(colorTotal => {
-      // assuming that keys are still in order
       let row = "";
       const lastIndex = Object.keys(colorTotal).length - 1;
       let i = 0;
       for (const key in colorTotal) {
-        
         if (colorTotal.hasOwnProperty(key)) {
           const element = colorTotal[key];
           row += element;

@@ -50,16 +50,13 @@ export class StackedBarchartComponent implements OnInit {
 
   ngOnInit() {
     this.createChart();
-    console.log(this.data);
     if(this.data){
       this.updateChart(this.data, this);
     }
   }
 
   ngOnChanges() {
-    console.log('on changes');
     if (this.chart) {
-      console.log('update chart');
       this.updateChart(this.data, this);
     }
   }
