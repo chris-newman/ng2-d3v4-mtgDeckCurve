@@ -56,15 +56,17 @@ import { Card } from '../shared/card';
             <tr class="tr-border">
               <th class="col-lg-2">Color</th>
               <th class="col-lg-2">Cost</th>
-              <th class="col-lg-8">Type</th>
+              <th class="col-lg-2">Type</th>
+              <th class="col-lg-6">Amount</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let card of deck.cards">
               <td class="col-2">{{card.color}}</td>
               <td class="col-2">{{card.cost}}</td>
-              <td class="col-3">{{card.type}}</td>
-              <td class="col-5"><a (click)="deleteCard(card)" href="javascript:void(0)" class="badge badge-danger">X</a></td>
+              <td class="col-2">{{card.type}}</td>
+              <td class="col-2">{{card.amount}}</td>
+              <td class="col-4"><a (click)="deleteCard(card)" href="javascript:void(0)" class="badge badge-danger">X</a></td>
             </tr>
           </tbody>
         </table>

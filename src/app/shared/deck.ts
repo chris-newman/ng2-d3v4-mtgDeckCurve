@@ -1,4 +1,5 @@
 import { Card } from "./card";
+import { forEach } from "@angular/router/src/utils/collection";
 
 export class Deck {
   costOpts: any = ['1', '2', '3', '4', '5', '6', '7+'];
@@ -16,20 +17,41 @@ export class Deck {
     return this.cards.length;
   }
 
-  addCard(card){
-    // TODO: validation
-    this.cards.push(card);
+  addCard(card){ // TODO: validation
+    // see if card can be stacked
+    let foundIndex = this.cardInDeck(card);
+    if(foundIndex != -1){
+      // TODO: additional validation once card names are implemented
+      // if(this.cards[foundIndex].amount < 4) 
+      this.cards[foundIndex].amount++;
+    }
+    else{
+      this.cards.push(card);
+    }
+  }
+  
+  // returns the index where the card is found in the deck, -1 if not found
+  private cardInDeck(card){
+    for(let i = 0; i < this.cards.length; i++){
+      if(this.cards[i].equals(card)) return i;
+    }
+    return -1;
   }
 
-  // delete a card from the deck, return the deleted card or null if not found
+
+  // delete a card from the deck
   deleteCard(cardToDelete){
     for(let i = 0; i < this.cards.length; i++){
       let card = this.cards[i];
       if(card.cost == cardToDelete.cost && card.type == cardToDelete.type && card.color == cardToDelete.color){
-        return this.cards.splice(i, 1);
+        if(this.cards[i].amount > 0){
+          this.cards[i].amount --;
+        }
+        else{
+          this.cards.splice(i, 1);
+        }
       }
     }
-    return null;
   }
 
   // reset the deck to 0 cards
@@ -63,7 +85,7 @@ export class Deck {
 
     // loop through all cards in the deck, if cost matches, increment color
     this.cards.forEach(card => {
-      if(card.cost == cost) result[card.color]++;
+      if(card.cost == cost) result[card.color]+=card.amount;
     });
     return result;
   }
