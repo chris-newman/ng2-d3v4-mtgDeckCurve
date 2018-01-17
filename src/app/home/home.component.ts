@@ -66,7 +66,10 @@ import { Card } from '../shared/card';
               <td class="col-2">{{card.cost}}</td>
               <td class="col-2">{{card.type}}</td>
               <td class="col-2">{{card.amount}}</td>
-              <td class="col-4"><a (click)="deleteCard(card)" href="javascript:void(0)" class="badge badge-danger">X</a></td>
+              <td class="col-4">
+                <a (click)="deleteCard(card)" href="javascript:void(0)" class="badge badge-danger"> - </a>
+                <a (click)="addCardToDeck(card)" href="javascript:void(0)" class="badge badge-success">+</a>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -172,6 +175,10 @@ export class HomeComponent implements OnInit {
     input.type = this.selectedCardType;
 
     let card = new Card(input);
+    this.addCardToDeck(card);
+  }
+
+  addCardToDeck(card){
     this.deck.addCard(card);
     this.updateChartData();
   }
