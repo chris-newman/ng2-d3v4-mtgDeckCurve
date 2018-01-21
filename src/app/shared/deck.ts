@@ -14,7 +14,12 @@ export class Deck {
   }
 
   getLength(){
-    return this.cards.length;
+    let sum = 0;
+    this.cards.forEach(card => {
+      sum += card.amount;
+    });
+    return sum;
+    // return this.cards.length;
   }
 
   addCard(card){ // TODO: validation
@@ -44,7 +49,7 @@ export class Deck {
     for(let i = 0; i < this.cards.length; i++){
       let card = this.cards[i];
       if(card.cost == cardToDelete.cost && card.type == cardToDelete.type && card.color == cardToDelete.color){
-        if(this.cards[i].amount > 0){
+        if(this.cards[i].amount > 1){
           this.cards[i].amount --;
         }
         else{
