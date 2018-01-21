@@ -10,6 +10,8 @@ import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs/Subject';
 import { Deck } from '../shared/deck';
 import { Card } from '../shared/card';
+import { DataService } from '../shared/data.service';
+// import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-home',
@@ -141,7 +143,7 @@ export class HomeComponent implements OnInit {
 
   public deck: Deck;
 
-  constructor() {}
+  constructor(private data: DataService) {}
 
   ngOnInit() {
     this.deck = new Deck({});
@@ -151,6 +153,11 @@ export class HomeComponent implements OnInit {
     this.cardCostOpts = this.deck.costOpts;
     this.colorValues = ['#f2f9f8', '#1b2223', '#107c41', '#e6452d', '#137fb8', '#cbc2bf', '#c2b26b'];
     this.resetDeck();
+
+    this.data.searchCards().then(function(response){
+    //this.data..then(function(response){
+      console.log(response);
+    });
   }
 
   // watch the input value of card type
