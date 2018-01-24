@@ -4,7 +4,11 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/merge';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/do';
+import {of} from 'rxjs/observable/of';
+import 'rxjs/add/operator/catch';
+
 import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/distinctUntilChanged';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs/Subject';
@@ -16,6 +20,13 @@ import { DataService } from '../shared/data.service';
 @Component({
   selector: 'app-home',
   template: `
+  
+  <ng-template #rt let-r="result" let-t="term">
+    {{ r.name}}
+  </ng-template>
+
+
+
   <div class="card-counter">
     <h2 class="inline-header">{{deck.getLength()}}/60 Cards </h2>
     <button type="button" (click)="resetDeck()" class="btn btn-secondary btn-reset">Reset</button>
@@ -24,6 +35,14 @@ import { DataService } from '../shared/data.service';
     <div class="row">
       <div class="col-6">
         <!-- FORM -->
+        <form action="">
+          <div class="form-group">
+            <label for="typeahead-http">Search for a card by its name:</label>
+            <input name="typeahead-http" type="text" class="form-control" [class.is-invalid]="searchFailed" [(ngModel)]="model" [ngbTypeahead]="search" placeholder="Card Name" [resultTemplate]="rt" />
+            <span *ngIf="searching">searching...</span>
+            <div class="invalid-feedback" *ngIf="searchFailed">Sorry, suggestions could not be loaded.</div>
+          </div>
+        </form>
         <form (submit)="inputData()">
           <div class="row">
             <div class="col-2 form-group">
@@ -141,6 +160,12 @@ export class HomeComponent implements OnInit {
   private selectedCardCost: string;
   private colorValues: Array<string>;
 
+  private model: any;
+  private searching = false;
+  private searchFailed = false;
+  private hideSearchingWhenUnsubscribed = new Observable(() => () => this.searching = false);
+
+
   public deck: Deck;
 
   constructor(private data: DataService) {}
@@ -154,10 +179,10 @@ export class HomeComponent implements OnInit {
     this.colorValues = ['#f2f9f8', '#1b2223', '#107c41', '#e6452d', '#137fb8', '#cbc2bf', '#c2b26b'];
     this.resetDeck();
 
-    this.data.searchCards().then(function(response){
-    //this.data..then(function(response){
-      console.log(response);
-    });
+    // this.data.searchCards().then(function(response){
+    // //this.data..then(function(response){
+    //   console.log(response);
+    // });
   }
 
   // watch the input value of card type
@@ -222,9 +247,18 @@ export class HomeComponent implements OnInit {
 
   search = (text$: Observable<string>) =>
     text$
-      .debounceTime(200)
+      .debounceTime(300)
       .distinctUntilChanged()
-      .map(term => term.length < 0 ? []
-        : this.colorOpts.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10));
-
+      .do(() => this.searching = true)
+      .switchMap(term =>
+        this.data.searchCards(term)
+          .do(() => this.searchFailed = false)
+          // .do((x) => console.log(x))
+          .catch(() => {
+            this.searchFailed = true;
+            return of([]);
+          }))
+      .do(() => this.searching = false)
+      .merge(this.hideSearchingWhenUnsubscribed);
 }
+
