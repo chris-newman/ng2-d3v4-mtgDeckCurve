@@ -34,20 +34,37 @@ import { DataService } from '../shared/data.service';
         <!-- FORM -->
         <form action="">
           <div class="row">
-            <div class="col-6">
+            <div class="col-6 no-padding-right">
               <div class="form-group">
                 <label for="typeahead-http">Search for a card by its name:</label>
+
                 <input name="typeahead-http" type="text" class="form-control" 
                   [class.is-invalid]="searchFailed" [(ngModel)]="searchedCard" 
                   [ngbTypeahead]="search" placeholder="Card Name" [inputFormatter]="formatter"
                   [resultTemplate]="rt" />
-                <span *ngIf="searching">searching...</span>
+                <!--<span *ngIf="searching">searching...</span> -->
+                
+
+                
                 <div class="invalid-feedback" *ngIf="searchFailed">Sorry, suggestions could not be loaded.</div>
                 
               </div>
             </div>
+            <div class="col-1 no-padding">
+              <div *ngIf="true" class="vertical-offset">
+                <div class="spinner-container">
+                  <div class='cssload-inner cssload-one'></div>
+                  <div class='cssload-inner cssload-two'></div>
+                  <div class='cssload-inner cssload-three'></div>
+                  <!--<div class="cssload-inner cssload-four"></div>-->
+                  <div class='cssload-inner cssload-green'></div>
+                  <div class='cssload-inner cssload-white'></div>
+                  <div class='cssload-inner cssload-orange'></div>
+                </div>
+              </div>
+            </div>
             <div class="col">
-              <button (click)="addSearchedCard()">Add</button>
+              <button (click)="addSearchedCard()" class="btn btn-primary btn-add">Add</button>
             </div>
           </div>
         </form>
@@ -142,7 +159,7 @@ import { DataService } from '../shared/data.service';
     width: 100%; 
   }
   .table-fixed tbody {
-    height: 420px;
+    height: 345px;
     overflow-y: auto;
     width: 100%;
   }
