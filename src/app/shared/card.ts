@@ -83,7 +83,7 @@ export class Card {
           case 'R': sum ++; break;
           case 'G': sum ++; break;
           case 'U': sum ++; break;
-          default:  sum += element;  break; // number
+          default:  sum += +element;  break; // number
         }
       }
 
