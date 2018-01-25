@@ -15,7 +15,6 @@ import { Subject } from 'rxjs/Subject';
 import { Deck } from '../shared/deck';
 import { Card } from '../shared/card';
 import { DataService } from '../shared/data.service';
-// import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-home',
@@ -36,11 +35,22 @@ import { DataService } from '../shared/data.service';
       <div class="col-6">
         <!-- FORM -->
         <form action="">
-          <div class="form-group">
-            <label for="typeahead-http">Search for a card by its name:</label>
-            <input name="typeahead-http" type="text" class="form-control" [class.is-invalid]="searchFailed" [(ngModel)]="model" [ngbTypeahead]="search" placeholder="Card Name" [resultTemplate]="rt" />
-            <span *ngIf="searching">searching...</span>
-            <div class="invalid-feedback" *ngIf="searchFailed">Sorry, suggestions could not be loaded.</div>
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="typeahead-http">Search for a card by its name:</label>
+                <input name="typeahead-http" type="text" class="form-control" 
+                  [class.is-invalid]="searchFailed" [(ngModel)]="searchedCard" 
+                  [ngbTypeahead]="search" placeholder="Card Name" [inputFormatter]="formatter"
+                  [resultTemplate]="rt" />
+                <span *ngIf="searching">searching...</span>
+                <div class="invalid-feedback" *ngIf="searchFailed">Sorry, suggestions could not be loaded.</div>
+                
+              </div>
+            </div>
+            <div class="col">
+              <button (click)="addSearchedCard()">Add</button>
+            </div>
           </div>
         </form>
         <form (submit)="inputData()">
@@ -160,11 +170,11 @@ export class HomeComponent implements OnInit {
   private selectedCardCost: string;
   private colorValues: Array<string>;
 
-  private model: any;
+  private searchedCard: any;
   private searching = false;
   private searchFailed = false;
   private hideSearchingWhenUnsubscribed = new Observable(() => () => this.searching = false);
-
+  formatter = (x: {name: string}) => x.name;
 
   public deck: Deck;
 
@@ -178,11 +188,6 @@ export class HomeComponent implements OnInit {
     this.cardCostOpts = this.deck.costOpts;
     this.colorValues = ['#f2f9f8', '#1b2223', '#107c41', '#e6452d', '#137fb8', '#cbc2bf', '#c2b26b'];
     this.resetDeck();
-
-    // this.data.searchCards().then(function(response){
-    // //this.data..then(function(response){
-    //   console.log(response);
-    // });
   }
 
   // watch the input value of card type
@@ -207,6 +212,11 @@ export class HomeComponent implements OnInit {
     input.type = this.selectedCardType;
 
     let card = new Card(input);
+    this.addCardToDeck(card);
+  }
+
+  addSearchedCard(){
+    let card = new Card(this.searchedCard);
     this.addCardToDeck(card);
   }
 
@@ -259,6 +269,7 @@ export class HomeComponent implements OnInit {
             return of([]);
           }))
       .do(() => this.searching = false)
-      .merge(this.hideSearchingWhenUnsubscribed);
+      .merge(this.hideSearchingWhenUnsubscribed)
+      
 }
 
