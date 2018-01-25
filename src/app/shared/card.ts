@@ -43,7 +43,8 @@ export class Card {
     
     
     
-    this.type = cardInfo.type;
+    // this.type = cardInfo.type;
+    this.type = parseType(cardInfo.type);
 
 
     if(this.type == 'Land'){

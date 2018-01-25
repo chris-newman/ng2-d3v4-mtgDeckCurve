@@ -44,14 +44,12 @@ import { DataService } from '../shared/data.service';
                   [resultTemplate]="rt" />
                 <!--<span *ngIf="searching">searching...</span> -->
                 
-
-                
                 <div class="invalid-feedback" *ngIf="searchFailed">Sorry, suggestions could not be loaded.</div>
                 
               </div>
             </div>
             <div class="col-1 no-padding">
-              <div *ngIf="true" class="vertical-offset">
+              <div *ngIf="searching" class="vertical-offset">
                 <div class="spinner-container">
                   <div class='cssload-inner cssload-one'></div>
                   <div class='cssload-inner cssload-two'></div>
@@ -63,8 +61,8 @@ import { DataService } from '../shared/data.service';
                 </div>
               </div>
             </div>
-            <div class="col">
-              <button (click)="addSearchedCard()" class="btn btn-primary btn-add">Add</button>
+            <div class="col no-padding-left">
+              <button (click)="addSearchedCard()" class="btn btn-primary btn-add">Add Card</button>
             </div>
           </div>
         </form>
@@ -91,8 +89,8 @@ import { DataService } from '../shared/data.service';
               </select>
             </div>
             <div class="col-3 offset-2">
-              <button type="submit" class="btn btn-primary btn-add">Add</button>
-              <button type="button" (click)="clearInputs()" class="btn btn-secondary btn-add">Clear</button>
+              <!-- <button type="submit" class="btn btn-primary btn-add">Add</button> -->
+              <button type="button" (click)="clearInputs()" class="btn btn-secondary btn-add">Clear Filters</button>
             </div>
           </div>
         </form>
@@ -100,19 +98,21 @@ import { DataService } from '../shared/data.service';
         <table class="table table-fixed table-sm">
           <thead>
             <tr class="tr-border">
+            <th class="col-lg-4">Name</th>
               <th class="col-lg-2">Color</th>
-              <th class="col-lg-2">Cost</th>
+              <th class="col-lg-1">Cost</th>
               <th class="col-lg-2">Type</th>
-              <th class="col-lg-6">Amount</th>
+              <th class="col-lg-3">Amount</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let card of deck.cards">
+              <td class="col-4">{{card.name}}</td>
               <td class="col-2">{{card.color}}</td>
-              <td class="col-2">{{card.cost}}</td>
+              <td class="col-1">{{card.cost}}</td>
               <td class="col-2">{{card.type}}</td>
               <td class="col-2">{{card.amount}}</td>
-              <td class="col-4">
+              <td class="col-1">
                 <a (click)="deleteCard(card)" href="javascript:void(0)" class="badge badge-danger"> - </a>
                 <a (click)="addCardToDeck(card)" href="javascript:void(0)" class="badge badge-success">+</a>
               </td>

@@ -14,6 +14,10 @@ body {
   padding-right: 0px;
 }
 
+.no-padding-left{
+  padding-left: 0px;
+}
+
 /* New spinner */
 
 .vertical-offset{
@@ -60,7 +64,8 @@ body {
   -ms-animation: cssload-rotate-one 1.15s linear infinite;
   -webkit-animation: cssload-rotate-one 1.15s linear infinite;
   -moz-animation: cssload-rotate-one 1.15s linear infinite;
-  border-bottom: 2px solid #5C5EDC;
+  /* border-bottom: 2px solid #5C5EDC; */
+  border-bottom: 2px solid #e6452d;
 }
 .cssload-inner.cssload-green {
   left: 0%;
@@ -70,7 +75,8 @@ body {
   -ms-animation: cssload-rotate-one 1.15s linear infinite;
   -webkit-animation: cssload-rotate-one 1.15s linear infinite;
   -moz-animation: cssload-rotate-one 1.15s linear infinite;
-  border-top: 2px solid #00ff3c;
+  /* border-top: 2px solid #00ff3c; */
+  border-top: 2px solid #107c41;
 }
 .cssload-inner.cssload-two {
   right: 0%;
@@ -81,6 +87,7 @@ body {
   -webkit-animation: cssload-rotate-two 1.15s linear infinite;
   -moz-animation: cssload-rotate-two 1.15s linear infinite;
   border-right: 2px solid rgba(76, 70, 101, 0.99);
+  /* border-right: 2px solid #1b2223; */
 }
 .cssload-inner.cssload-white {
   right: 0%;
@@ -90,7 +97,7 @@ body {
   -ms-animation: cssload-rotate-two 1.15s linear infinite;
   -webkit-animation: cssload-rotate-two 1.15s linear infinite;
   -moz-animation: cssload-rotate-two 1.15s linear infinite;
-  border-left: 2px solid #fff;
+  border-left: 2px solid #f2f9f8;
 }
 
 .cssload-inner.cssload-three {
@@ -101,7 +108,8 @@ body {
   -ms-animation: cssload-rotate-three 1.15s linear infinite;
   -webkit-animation: cssload-rotate-three 1.15s linear infinite;
   -moz-animation: cssload-rotate-three 1.15s linear infinite;
-  border-top: 2px solid #e9908a;
+  /* border-top: 2px solid #e9908a; */
+  border-top: 2px solid #c2b26b;
 }
 .cssload-inner.cssload-orange {
   right: 0%;
@@ -111,7 +119,8 @@ body {
   -ms-animation: cssload-rotate-three 1.15s linear infinite;
   -webkit-animation: cssload-rotate-three 1.15s linear infinite;
   -moz-animation: cssload-rotate-three 1.15s linear infinite;
-  border-bottom: 2px solid #ffa500;
+  /* border-bottom: 2px solid #ffa500; */
+  border-bottom: 2px solid #137fb8;
 }
 
 @keyframes cssload-rotate-one {
