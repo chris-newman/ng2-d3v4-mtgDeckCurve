@@ -24,8 +24,6 @@ import { DataService } from '../shared/data.service';
     {{ r.name}}
   </ng-template>
 
-
-
   <div class="card-counter">
     <h2 class="inline-header">{{deck.getLength()}}/60 Cards </h2>
     <button type="button" (click)="resetDeck()" class="btn btn-secondary btn-reset">Reset</button>
@@ -215,8 +213,10 @@ export class HomeComponent implements OnInit {
     this.addCardToDeck(card);
   }
 
+  // wip
   addSearchedCard(){
     let card = new Card(this.searchedCard);
+    console.log(this.searchedCard);
     this.addCardToDeck(card);
   }
 
