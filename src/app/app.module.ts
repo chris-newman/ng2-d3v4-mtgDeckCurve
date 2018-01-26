@@ -9,13 +9,15 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { routing, appRoutingProviders } from './app.routing';
 import { DataService } from './shared/data.service';
+import { CardViewerComponent } from './card-viewer/card-viewer.component';
 
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent
+    HomeComponent,
+    CardViewerComponent
   ],
   imports: [
     BrowserModule,
@@ -26,6 +28,7 @@ import { DataService } from './shared/data.service';
     routing
   ],
   providers: [appRoutingProviders, DataService],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [CardViewerComponent]
 })
 export class AppModule { }

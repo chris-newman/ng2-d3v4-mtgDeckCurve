@@ -14,13 +14,9 @@ import { Component } from '@angular/core';
   .navbar-space{
     margin-bottom: 13px;
   }
-  .bg-black{
-    background-color: black;
-    border-bottom: 1px solid #585858;
-  }
   
   `]
 })
 export class AppComponent {
-  title = 'MTG Deck Curve';
+  title = 'MTG Sim';
 } 

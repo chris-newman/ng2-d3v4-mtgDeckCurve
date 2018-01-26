@@ -6,6 +6,11 @@ body {
   background-color: #3b3b3b;
 }
 
+.bg-black{
+  background-color: black;
+  border-bottom: 1px solid #585858;
+}
+
 .no-padding{
   padding: 0px;
 }

@@ -17,28 +17,14 @@ export class Card {
     this.name = cardInfo.name || "";
     this.amount = cardInfo.amount || 1;
 
-    // TODO: remove if - else, and only use cards from the api
+    this.imageUrl = cardInfo.imageUrl;
 
-    if(cardInfo.color){
-      this.color = cardInfo.color;
-    }
-    else{
-      this.color = parseColor(cardInfo.colorIdentity);
-    }
+    this.color = parseColor(cardInfo.colorIdentity);
     
-    if(cardInfo.cost){
-      this.cost = cardInfo.cost;
-    }
-    else{
-      // TODO: create cost object that has display mana cost (like real card) as well as total cost for chart
-      this.cost = parseCost(cardInfo.manaCost); 
-    }
+    // TODO: create cost object that has display mana cost (like real card) as well as total cost for chart
+    this.cost = parseCost(cardInfo.manaCost);     
     
-    
-    
-    // this.type = cardInfo.type;
     this.type = parseType(cardInfo.type);
-
 
     if(this.type == 'Land'){
       this.cost = 0;
@@ -103,8 +89,6 @@ export class Card {
       return typeArr[0];
     }
   }
-
-  // TODO: modal to show card details
 
   // compare to another card object
   equals(otherCard){

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/merge';
@@ -10,11 +10,12 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/distinctUntilChanged';
-import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
+import { NgbTypeahead, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs/Subject';
 import { Deck } from '../shared/deck';
 import { Card } from '../shared/card';
 import { DataService } from '../shared/data.service';
+import { CardViewerComponent } from '../card-viewer/card-viewer.component';
 
 @Component({
   selector: 'app-home',
@@ -66,7 +67,7 @@ import { DataService } from '../shared/data.service';
             </div>
           </div>
         </form>
-        <form (submit)="inputData()">
+        <!--<form (submit)="inputData()">
           <div class="row">
             <div class="col-2 form-group">
               <label for="color">Color:</label>
@@ -89,11 +90,11 @@ import { DataService } from '../shared/data.service';
               </select>
             </div>
             <div class="col-3 offset-2">
-              <!-- <button type="submit" class="btn btn-primary btn-add">Add</button> -->
+              <!-- <button type="submit" class="btn btn-primary btn-add">Add</button> 
               <button type="button" (click)="clearInputs()" class="btn btn-secondary btn-add">Clear Filters</button>
             </div>
           </div>
-        </form>
+        </form> -->
 
         <!-- DECK TABLE -->
         <table class="table table-fixed table-sm">
@@ -108,7 +109,7 @@ import { DataService } from '../shared/data.service';
           </thead>
           <tbody>
             <tr *ngFor="let card of deck.cards">
-              <td class="col-4">{{card.name}}</td>
+              <td class="col-4"><span class="text-link" (click)="viewCard(card)">{{card.name}}</span></td>
               <td class="col-2">{{card.color}}</td>
               <td class="col-1">{{card.cost}}</td>
               <td class="col-3">{{card.type}}</td>
@@ -171,8 +172,19 @@ import { DataService } from '../shared/data.service';
     float: left;
     border-bottom-width: 0;
   }
+  .text-link{
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  /* modal styles */
+  .dark-modal .modal-content{
+    background-color: #141011;
+    color: white;
+  }
   `
-  ]
+  ],
+  encapsulation: ViewEncapsulation.None
 })
 export class HomeComponent implements OnInit {
   private chartData: any;
@@ -194,7 +206,7 @@ export class HomeComponent implements OnInit {
 
   public deck: Deck;
 
-  constructor(private data: DataService) {}
+  constructor(private data: DataService, private modalService: NgbModal) {}
 
   ngOnInit() {
     this.deck = new Deck({});
@@ -283,6 +295,18 @@ export class HomeComponent implements OnInit {
           }))
       .do(() => this.searching = false)
       .merge(this.hideSearchingWhenUnsubscribed)
+
+
+  // ==================================================================================================
+  // ngb modal code
+  // ==================================================================================================
+  viewCard(card: Card){
+    const modalRef = this.modalService.open(CardViewerComponent, {
+      windowClass: 'dark-modal',
+      size: 'lg'
+    });
+    modalRef.componentInstance.card = card;
+  }
       
 }
 
