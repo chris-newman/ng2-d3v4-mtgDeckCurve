@@ -94,6 +94,7 @@ import { DataService } from '../shared/data.service';
             </div>
           </div>
         </form>
+
         <!-- DECK TABLE -->
         <table class="table table-fixed table-sm">
           <thead>
@@ -101,8 +102,8 @@ import { DataService } from '../shared/data.service';
             <th class="col-lg-4">Name</th>
               <th class="col-lg-2">Color</th>
               <th class="col-lg-1">Cost</th>
-              <th class="col-lg-2">Type</th>
-              <th class="col-lg-3">Amount</th>
+              <th class="col-lg-3">Type</th>
+              <th class="col-lg-2">Amount</th>
             </tr>
           </thead>
           <tbody>
@@ -110,8 +111,8 @@ import { DataService } from '../shared/data.service';
               <td class="col-4">{{card.name}}</td>
               <td class="col-2">{{card.color}}</td>
               <td class="col-1">{{card.cost}}</td>
-              <td class="col-2">{{card.type}}</td>
-              <td class="col-2">{{card.amount}}</td>
+              <td class="col-3">{{card.type}}</td>
+              <td class="col-1">{{card.amount}}</td>
               <td class="col-1">
                 <a (click)="deleteCard(card)" href="javascript:void(0)" class="badge badge-danger"> - </a>
                 <a (click)="addCardToDeck(card)" href="javascript:void(0)" class="badge badge-success">+</a>

@@ -5,22 +5,15 @@ export class Card {
   cost: number;
   amount: number;
   imageUrl: string;
+  apiData: any;
 
   // TODO: add more fields after integrating mtg api
 
-  /* NOTE: color identies
-    W: white
-    U: blue
-    B: black
-    G: green
-    R: red
-    undefined: grey/artifacts (property doesnt exist if grey)
-
-    may have multiple color identities (Hostage taker is blue and black ['U', 'B'])
-  */
-
   //  TODO: handle creating cards from API data
   constructor(cardInfo:any) {
+
+    this.apiData = cardInfo;
+
     this.name = cardInfo.name || "";
     this.amount = cardInfo.amount || 1;
 
@@ -65,6 +58,15 @@ export class Card {
     }
 
     function parseCost(manaCost){
+    /* NOTE: color identies
+      W: white
+      U: blue
+      B: black
+      G: green
+      R: red
+      undefined: grey/artifacts (property doesnt exist if grey)
+      - may have multiple color identities (Hostage taker is blue and black ['U', 'B'])
+    */
       if(!manaCost) return 0;
       // convert string an array
       manaCost = manaCost.replace(/{/g, "");
@@ -91,23 +93,21 @@ export class Card {
     }
 
     function parseType(type){
+      if(!type) return;
       let typeArr = type.split(' ');
-      typeArr.map((x) => x.toLowerCase());
-      
+
       // ignore prefixes
-      if(typeArr[0] == 'legendary' || typeArr[0] == 'basic') typeArr.splice(0,1);
+      if(typeArr[0] == 'Legendary' || typeArr[0] == 'Basic') return typeArr[0].substring(0,1) + '. ' + typeArr[1];
 
       // return the first word of the type (creature, land, enchantment, etc...)
       return typeArr[0];
     }
   }
 
-
-  
   // TODO: modal to show card details
 
   // compare to another card object
   equals(otherCard){
-    return (this.type === otherCard.type && this.color === otherCard.color && this.cost === otherCard.cost);
+    return (this.name == otherCard.name && this.type === otherCard.type && this.color === otherCard.color && this.cost === otherCard.cost);
   }
 }
