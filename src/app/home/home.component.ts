@@ -264,13 +264,8 @@ export class HomeComponent implements OnInit {
   }
 
   // ==================================================================================================
-  // typeahead code - TODO: integrate mtg api, use typeahead with http request
+  // typeahead code - integrated mtg api, using ngbtypeahead with http request
   // ==================================================================================================
-  @ViewChild('colorInput') colorInput: NgbTypeahead;
-  @ViewChild('costInput') costInput: NgbTypeahead;
-
-  focus$ = new Subject<string>();
-  click$ = new Subject<string>();
 
   search = (text$: Observable<string>) =>
     text$
