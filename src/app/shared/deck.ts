@@ -27,7 +27,7 @@ export class Deck {
     let foundIndex = this.cardInDeck(card);
     if(foundIndex != -1){
       // TODO: additional validation once card names are implemented
-      // if(this.cards[foundIndex].amount < 4) 
+      if(card.type != 'B. Land' && this.cards[foundIndex].amount == 4) return;
       this.cards[foundIndex].amount++;
     }
     else{
