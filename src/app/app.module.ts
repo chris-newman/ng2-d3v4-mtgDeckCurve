@@ -4,6 +4,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { ChartsModule } from './charts/charts.module';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import {NgForageModule} from "ngforage";
+
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
@@ -23,6 +25,7 @@ import { CardViewerComponent } from './card-viewer/card-viewer.component';
     BrowserModule,
     FormsModule,
     NgbModule.forRoot(),
+    NgForageModule,
     HttpClientModule,
     ChartsModule,
     routing

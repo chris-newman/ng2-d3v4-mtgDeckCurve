@@ -101,8 +101,8 @@ import { CardViewerComponent } from '../card-viewer/card-viewer.component';
           <thead>
             <tr class="tr-border">
             <th class="col-lg-4">Name</th>
-              <th class="col-lg-2">Color</th>
-              <th class="col-lg-1">Cost</th>
+              <th class="col-lg-1">Color</th>
+              <th class="col-lg-2">Cost</th>
               <th class="col-lg-3">Type</th>
               <th class="col-lg-2">Amount</th>
             </tr>
@@ -110,8 +110,8 @@ import { CardViewerComponent } from '../card-viewer/card-viewer.component';
           <tbody>
             <tr *ngFor="let card of deck.cards">
               <td class="col-4"><span class="text-link" (click)="viewCard(card)">{{card.name}}</span></td>
-              <td class="col-2">{{card.color}}</td>
-              <td class="col-1">{{card.cost}}</td>
+              <td class="col-1">{{card.color}}</td>
+              <td class="col-2">{{card.cost}}</td>
               <td class="col-3">{{card.type}}</td>
               <td class="col-1">{{card.amount}}</td>
               <td class="col-1">
@@ -184,9 +184,10 @@ import { CardViewerComponent } from '../card-viewer/card-viewer.component';
   }
   `
   ],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None // in order to correctly apply css class to card viewer modal
 })
 export class HomeComponent implements OnInit {
+  public deck: Deck;
   private chartData: any;
   private chartIndices: Array<any>;
   
@@ -203,8 +204,6 @@ export class HomeComponent implements OnInit {
   private searchFailed = false;
   private hideSearchingWhenUnsubscribed = new Observable(() => () => this.searching = false);
   formatter = (x: {name: string}) => x.name;
-
-  public deck: Deck;
 
   constructor(private data: DataService, private modalService: NgbModal) {}
 
