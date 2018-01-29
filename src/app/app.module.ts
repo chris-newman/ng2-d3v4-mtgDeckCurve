@@ -12,6 +12,7 @@ import { HomeComponent } from './home/home.component';
 import { routing, appRoutingProviders } from './app.routing';
 import { DataService } from './shared/data.service';
 import { CardViewerComponent } from './card-viewer/card-viewer.component';
+import { LoadSaveComponent } from './load-save/load-save.component';
 
 
 
@@ -19,7 +20,8 @@ import { CardViewerComponent } from './card-viewer/card-viewer.component';
   declarations: [
     AppComponent,
     HomeComponent,
-    CardViewerComponent
+    CardViewerComponent,
+    LoadSaveComponent
   ],
   imports: [
     BrowserModule,
@@ -32,6 +34,6 @@ import { CardViewerComponent } from './card-viewer/card-viewer.component';
   ],
   providers: [appRoutingProviders, DataService],
   bootstrap: [AppComponent],
-  entryComponents: [CardViewerComponent]
+  entryComponents: [CardViewerComponent, LoadSaveComponent]
 })
 export class AppModule { }

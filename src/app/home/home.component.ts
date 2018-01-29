@@ -16,6 +16,7 @@ import { Deck } from '../shared/deck';
 import { Card } from '../shared/card';
 import { DataService } from '../shared/data.service';
 import { CardViewerComponent } from '../card-viewer/card-viewer.component';
+import { LoadSaveComponent } from '../load-save/load-save.component';
 
 @Component({
   selector: 'app-home',
@@ -28,6 +29,7 @@ import { CardViewerComponent } from '../card-viewer/card-viewer.component';
   <div class="card-counter">
     <h2 class="inline-header">{{deck.getLength()}}/60 Cards </h2>
     <button type="button" (click)="resetDeck()" class="btn btn-secondary btn-reset">Reset</button>
+    <button type="button" (click)="loadSave()" class="btn btn-success btn-reset">Save</button>
   </div>
   <div class="container-fluid">
     <div class="row">
@@ -305,6 +307,14 @@ export class HomeComponent implements OnInit {
       size: 'lg'
     });
     modalRef.componentInstance.card = card;
+  }
+
+  loadSave(){
+    const modalRef = this.modalService.open(LoadSaveComponent, {
+      // windowClass: 'dark-modal',
+      size: 'lg'
+    });
+    // modalRef.componentInstance.card = card;
   }
       
 }
