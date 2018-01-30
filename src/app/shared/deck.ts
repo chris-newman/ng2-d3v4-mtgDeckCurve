@@ -2,15 +2,15 @@ import { Card } from "./card";
 import { forEach } from "@angular/router/src/utils/collection";
 
 export class Deck {
+  name: string;
   costOpts: any = ['1', '2', '3', '4', '5', '6', '7+'];
   colorOpts: any = ['white', 'black', 'green', 'red', 'blue', 'grey', 'multi'];
   typeOpts: any = ['creature','instant','sorcery','artifact','enchantment','Land'];
-  name: string;
   private cards: Array<Card>;
 
   constructor(deckInfo:any) {
-    this.name = deckInfo.name;
-    this.cards = deckInfo.cards;
+    this.name = deckInfo.name || 'Unnamed Deck';
+    this.cards = deckInfo.cards || [];
   }
 
   getLength(){

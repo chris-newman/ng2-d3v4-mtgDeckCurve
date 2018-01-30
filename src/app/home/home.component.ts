@@ -17,6 +17,7 @@ import { Card } from '../shared/card';
 import { DataService } from '../shared/data.service';
 import { CardViewerComponent } from '../card-viewer/card-viewer.component';
 import { LoadSaveComponent } from '../load-save/load-save.component';
+import { DeckService } from '../core/deck.service';
 
 @Component({
   selector: 'app-home',
@@ -27,9 +28,12 @@ import { LoadSaveComponent } from '../load-save/load-save.component';
   </ng-template>
 
   <div class="card-counter">
-    <h2 class="inline-header">{{deck.getLength()}}/60 Cards </h2>
+    <h2 class="inline-header">{{deckService.deck.name}} - {{deckService.deck.getLength()}}/60 Cards </h2>
     <button type="button" (click)="resetDeck()" class="btn btn-secondary btn-reset">Reset</button>
-    <button type="button" (click)="loadSave()" class="btn btn-success btn-reset">Save</button>
+    <div class="float-right">
+      <button type="button" (click)="deckService.saveDeck(deckService.deck)" class="btn btn-default">Save</button>
+      <button type="button" (click)="loadDeck()" class="btn btn-default">Load</button>
+    </div>
   </div>
   <div class="container-fluid">
     <div class="row">
@@ -110,7 +114,7 @@ import { LoadSaveComponent } from '../load-save/load-save.component';
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let card of deck.cards">
+            <tr *ngFor="let card of deckService.deck.cards">
               <td class="col-4"><span class="text-link" (click)="viewCard(card)">{{card.name}}</span></td>
               <td class="col-1">{{card.color}}</td>
               <td class="col-2">{{card.cost}}</td>
@@ -189,7 +193,7 @@ import { LoadSaveComponent } from '../load-save/load-save.component';
   encapsulation: ViewEncapsulation.None // in order to correctly apply css class to card viewer modal
 })
 export class HomeComponent implements OnInit {
-  public deck: Deck;
+  // public deck: Deck;
   private chartData: any;
   private chartIndices: Array<any>;
   
@@ -207,14 +211,14 @@ export class HomeComponent implements OnInit {
   private hideSearchingWhenUnsubscribed = new Observable(() => () => this.searching = false);
   formatter = (x: {name: string}) => x.name;
 
-  constructor(private data: DataService, private modalService: NgbModal) {}
+  constructor(private deckService: DeckService, private data: DataService, private modalService: NgbModal) {}
 
   ngOnInit() {
-    this.deck = new Deck({});
+    
     this.chartIndices = ['Land', '1', '2', '3', '4', '5', '6', '7+']
-    this.colorOpts = this.deck.colorOpts;
-    this.cardTypeOpts = this.deck.typeOpts;
-    this.cardCostOpts = this.deck.costOpts;
+    this.colorOpts = this.deckService.deck.colorOpts;
+    this.cardTypeOpts = this.deckService.deck.typeOpts;
+    this.cardCostOpts = this.deckService.deck.costOpts;
     this.colorValues = ['#f2f9f8', '#1b2223', '#107c41', '#e6452d', '#137fb8', '#cbc2bf', '#c2b26b'];
     this.resetDeck();
   }
@@ -229,7 +233,7 @@ export class HomeComponent implements OnInit {
   // ==================================================================================================
   // x (pill) button fn
   deleteCard(cardToDelete){
-    this.deck.deleteCard(cardToDelete);
+    this.deckService.deck.deleteCard(cardToDelete);
     this.updateChartData();
   }
 
@@ -252,13 +256,13 @@ export class HomeComponent implements OnInit {
   }
 
   addCardToDeck(card){
-    this.deck.addCard(card);
+    this.deckService.deck.addCard(card);
     this.updateChartData();
   }
 
   // reset button fn
   public resetDeck() {
-    this.deck.reset();
+    this.deckService.deck.reset();
     this.updateChartData();
   }
 
@@ -274,7 +278,7 @@ export class HomeComponent implements OnInit {
   // ==================================================================================================
   // method required to update chart rendering due to onChanges implementation in chart component
   private updateChartData() {
-    this.chartData = this.deck.makeD3ObjectArray();
+    this.chartData = this.deckService.deck.makeD3ObjectArray();
   }
 
   // ==================================================================================================
@@ -309,7 +313,7 @@ export class HomeComponent implements OnInit {
     modalRef.componentInstance.card = card;
   }
 
-  loadSave(){
+  loadDeck(){
     const modalRef = this.modalService.open(LoadSaveComponent, {
       // windowClass: 'dark-modal',
       size: 'lg'

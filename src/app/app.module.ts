@@ -13,6 +13,7 @@ import { routing, appRoutingProviders } from './app.routing';
 import { DataService } from './shared/data.service';
 import { CardViewerComponent } from './card-viewer/card-viewer.component';
 import { LoadSaveComponent } from './load-save/load-save.component';
+import { CoreModule } from './core/core.module';
 
 
 
@@ -29,6 +30,7 @@ import { LoadSaveComponent } from './load-save/load-save.component';
     NgbModule.forRoot(),
     NgForageModule,
     HttpClientModule,
+    CoreModule,
     ChartsModule,
     routing
   ],
