@@ -27,13 +27,30 @@ import { DeckService } from '../core/deck.service';
     {{ r.name}}
   </ng-template>
 
-  <div class="card-counter">
-    <h2 class="inline-header">{{deckService.deck.name}} - {{deckService.deck.getLength()}}/60 Cards </h2>
-    <button type="button" (click)="resetDeck()" class="btn btn-secondary btn-reset">Reset</button>
-    <div class="float-right">
-      <button type="button" (click)="deckService.saveDeck(deckService.deck)" class="btn btn-default">Save</button>
-      <button type="button" (click)="loadDeck()" class="btn btn-default">Load</button>
+  <div class="row">
+    <div class="col-6">
+      <div class="row">
+        <div class="col-6">
+          <input class="form-control form-control-lg" type="text" [(ngModel)]="deckService.deck.name">
+        </div>
+        <div class="col-6 no-padding-left">
+          <h2 class="inline-header"> - {{deckService.deck.getLength()}}/60 Cards </h2>
+          <button type="button" (click)="resetDeck()" class="btn btn-secondary btn-reset">Reset</button>
+        </div>
+       
+      </div>
     </div>
+    <div class="col-6">
+      <div class="float-right">
+        <button type="button" (click)="deckService.saveDeck(deckService.deck)" class="btn btn-default">Save</button>
+        <button type="button" (click)="loadDeck()" class="btn btn-default">Load</button>
+      </div>
+    </div>
+  </div>
+  <div class="card-counter">
+    
+    <!--<h2 class="inline-header">{{deckService.deck.name}} - {{deckService.deck.getLength()}}/60 Cards </h2>-->
+    
   </div>
   <div class="container-fluid">
     <div class="row">
