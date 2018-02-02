@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DeckService } from '../core/deck.service';
 import { Deck } from '../shared/deck';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-load-save',
@@ -9,9 +10,7 @@ import { Deck } from '../shared/deck';
       <p>
         load-save works!
       </p>
-      <ul>
-      <li *ngFor="let deck of decks;">{{deck.name}} - {{deck.getLength()}}</li>
-      </ul>
+      <p *ngFor="let deck of decks;" (click)="deckService.setDeck(deck); modal.close();">{{deck.name}} - {{deck.getLength()}}</p>
     </div>
     
   `,
@@ -24,13 +23,15 @@ import { Deck } from '../shared/deck';
 })
 export class LoadSaveComponent implements OnInit {
   decks: Array<Deck>;
-  constructor(private deckService: DeckService) { }
+  constructor(private deckService: DeckService, public modal: NgbActiveModal) { }
 
   ngOnInit() {
     this.deckService.getDecks().then((decks : Array<Deck>) => {
       this.decks = decks;
       console.log(this.decks);
+      console.log(this);
     })
   }
+
 
 }
