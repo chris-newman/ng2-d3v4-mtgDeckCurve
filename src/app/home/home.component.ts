@@ -336,6 +336,9 @@ export class HomeComponent implements OnInit {
       size: 'lg'
     });
     // modalRef.componentInstance.card = card;
+    modalRef.result.then(() => {
+      this.updateChartData();
+    });
   }
       
 }

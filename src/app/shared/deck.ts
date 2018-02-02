@@ -64,9 +64,12 @@ export class Deck {
     this.cards = new Array<Card>();
   }
 
-  // TODO: save fn
-  save(){
-    // use local storage
+  restoreCards(){
+    for (let i = 0; i < this.cards.length; i++) {
+      console.log('deck.restore cards');
+      //const element = this.cards[i];
+      this.cards[i] = new Card(this.cards[i], true);
+    }
   }
   
   // returns an array of objects for the d3 stacked barchart

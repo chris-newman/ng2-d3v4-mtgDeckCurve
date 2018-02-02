@@ -10,21 +10,27 @@ export class Card {
   // TODO: add more fields after integrating mtg api
 
   //  TODO: handle creating cards from API data
-  constructor(cardInfo:any) {
+  constructor(cardInfo:any, restore?: boolean) {
 
-    this.apiData = cardInfo;
+    this.apiData = cardInfo.apiData ; // accounting for restoring card fn in deck
 
     this.name = cardInfo.name || "";
     this.amount = cardInfo.amount || 1;
 
     this.imageUrl = cardInfo.imageUrl;
 
-    this.color = parseColor(cardInfo.colorIdentity);
-    
-    // TODO: create cost object that has display mana cost (like real card) as well as total cost for chart
-    this.cost = parseCost(cardInfo.manaCost);     
-    
-    this.type = parseType(cardInfo.type);
+    if(restore){
+      this.color = cardInfo.color;
+      this.cost = cardInfo.cost;
+      this.type = cardInfo.type;
+    }
+    else{
+      this.color = parseColor(cardInfo.colorIdentity);
+      // TODO: create cost object that has display mana cost (like real card) as well as total cost for chart
+      this.cost = parseCost(cardInfo.manaCost);     
+      this.type = parseType(cardInfo.type);
+    }
+
 
     if(this.type == 'Land'){
       this.cost = 0;

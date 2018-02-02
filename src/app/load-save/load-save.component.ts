@@ -10,7 +10,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
       <p>
         load-save works!
       </p>
-      <p *ngFor="let deck of decks;" (click)="deckService.setDeck(deck); modal.close();">{{deck.name}} - {{deck.getLength()}}</p>
+      <p *ngFor="let deck of decks;" (click)="setDeck(deck)">{{deck.name}} - {{deck.getLength()}}</p>
     </div>
     
   `,
@@ -31,6 +31,15 @@ export class LoadSaveComponent implements OnInit {
       console.log(this.decks);
       console.log(this);
     })
+  }
+
+  setDeck(deck){
+
+    deck.restoreCards();
+    this.deckService.setDeck(deck);
+    console.log(this.deckService.deck);
+
+    this.modal.close();
   }
 
 
