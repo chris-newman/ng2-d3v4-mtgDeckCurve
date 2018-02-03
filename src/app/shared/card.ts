@@ -68,7 +68,7 @@ export class Card {
       manaArr.splice(manaArr.length -1, 1);
 
       // calculate total cost
-      let sum = 0;
+      let sum:any = 0;
       for (let i = 0; i < manaArr.length; i++) {
         const element = manaArr[i];
         switch (element) {
@@ -80,7 +80,7 @@ export class Card {
           default:  sum += +element;  break; // number
         }
       }
-
+      if(sum >= 7) sum = "7+";
       return sum;
     }
 
