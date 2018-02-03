@@ -36,6 +36,7 @@ import { DeckService } from '../core/deck.service';
         <div class="col-6 no-padding-left">
           <h2 class="inline-header"> - {{deckService.deck.getLength()}}/60 Cards </h2>
           <button type="button" (click)="resetDeck()" class="btn btn-secondary btn-reset">Reset</button>
+          <button type="button" (click)="deckService.deck.sortAscendingCost()" class="btn btn-secondary btn-reset">Sort</button>
         </div>
        
       </div>
@@ -184,7 +185,7 @@ import { DeckService } from '../core/deck.service';
     width: 100%; 
   }
   .table-fixed tbody {
-    height: 345px;
+    height: 410px;
     overflow-y: auto;
     width: 100%;
   }
