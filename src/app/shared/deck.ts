@@ -48,13 +48,14 @@ export class Deck {
   deleteCard(cardToDelete){
     for(let i = 0; i < this.cards.length; i++){
       let card = this.cards[i];
-      if(card.cost == cardToDelete.cost && card.type == cardToDelete.type && card.color == cardToDelete.color){
+      if(card.name == cardToDelete.name){
         if(this.cards[i].amount > 1){
           this.cards[i].amount --;
         }
         else{
           this.cards.splice(i, 1);
         }
+        return;
       }
     }
   }
