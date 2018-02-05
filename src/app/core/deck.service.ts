@@ -36,7 +36,8 @@ export class DeckService {
 
   // delete a deck from local storage
   deleteDeck(deck: Deck){
-    this.ngf.removeItem(deck.name);
+    console.log('deletedeck in service called');
+    return this.ngf.removeItem(deck.name);
   }
 
 }

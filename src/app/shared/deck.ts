@@ -119,7 +119,7 @@ export class Deck {
     let headerRow = "cost,white,black,green,red,blue,grey,multi\n";
     result += headerRow;
     let colorTotals = this.makeD3ObjectArray();
-    console.log(colorTotals);
+    // console.log(colorTotals);
     colorTotals.forEach(colorTotal => {
       let row = "";
       const lastIndex = Object.keys(colorTotal).length - 1;
