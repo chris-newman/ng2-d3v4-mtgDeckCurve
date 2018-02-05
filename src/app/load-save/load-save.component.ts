@@ -6,16 +6,18 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 @Component({
   selector: 'app-load-save',
   template: `
-    <div class="container">
-      <p>
-        load-save works!
-      </p>
+    
+    <div class="modal-header">
+      <h4 class="modal-title">Modal title</h4>
+      <!--<button type="button" class="close" (click)="modal.close()"></button>-->
+    </div>
+    <div class="modal-body">
       <p *ngFor="let deck of decks;" (click)="setDeck(deck)">{{deck.name}} - {{deck.getLength()}}</p>
     </div>
     
   `,
   styles: [`
-    p, li {
+    h4, p, li {
       color: black;
     }
   `
