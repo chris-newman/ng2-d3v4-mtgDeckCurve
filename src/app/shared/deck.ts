@@ -13,6 +13,10 @@ export class Deck {
     this.cards = deckInfo.cards || [];
   }
 
+  getCards(){
+    return this.cards;
+  }
+
   getLength(){
     let sum = 0;
     this.cards.forEach(card => {

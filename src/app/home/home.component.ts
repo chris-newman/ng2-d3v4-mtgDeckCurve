@@ -28,53 +28,46 @@ import { DeckService } from '../core/deck.service';
   </ng-template>
 
   <div class="row">
-    <div class="col-6">
+    <div class="col-12">
       <div class="row">
-        <div class="col-6">
-          <input class="form-control form-control-lg" type="text" [(ngModel)]="deckService.deck.name">
-        </div>
-        <div class="col-6 no-padding-left">
-          <h2 class="inline-header"> - {{deckService.deck.getLength()}}/60 Cards </h2>
+        
+        <div class="col-9 col-card-count">
+          <h2 class="inline-header">{{deckService.deck.name}} - {{deckService.deck.getLength()}}/60 Cards </h2>
           <button type="button" (click)="resetDeck()" class="btn btn-secondary btn-reset">Reset</button>
           <button type="button" (click)="deckService.deck.sortAscendingCost()" class="btn btn-secondary btn-reset">Sort</button>
+        </div>
+        <div class="col-3">
+          <div class="float-right">
+            <button type="button" (click)="deckService.saveDeck(deckService.deck)" class="btn btn-default">Save</button>
+            <button type="button" (click)="loadDeck()" class="btn btn-default">Load</button>
+          </div>
         </div>
        
       </div>
     </div>
-    <div class="col-6">
-      <div class="float-right">
-        <button type="button" (click)="deckService.saveDeck(deckService.deck)" class="btn btn-default">Save</button>
-        <button type="button" (click)="loadDeck()" class="btn btn-default">Load</button>
-      </div>
-    </div>
   </div>
-  <div class="card-counter">
-    
-    <!--<h2 class="inline-header">{{deckService.deck.name}} - {{deckService.deck.getLength()}}/60 Cards </h2>-->
-    
-  </div>
+
   <div class="container-fluid">
     <div class="row">
-      <div class="col-6">
+      <div class="col-lg-6 col-md-12">
         <!-- FORM -->
         <form action="">
           <div class="row">
             <div class="col-6 no-padding-right">
               <div class="form-group">
-                <label for="typeahead-http">Search for a card by its name:</label>
+                <label for="typeahead-http">Search for a card by name:</label>
 
                 <input name="typeahead-http" type="text" class="form-control" 
                   [class.is-invalid]="searchFailed" [(ngModel)]="searchedCard" 
-                  [ngbTypeahead]="search" placeholder="Card Name" [inputFormatter]="formatter"
+                  [ngbTypeahead]="search" placeholder="Search for a Card" [inputFormatter]="formatter"
                   [resultTemplate]="rt" />
-                <!--<span *ngIf="searching">searching...</span> -->
                 
                 <div class="invalid-feedback" *ngIf="searchFailed">Sorry, suggestions could not be loaded.</div>
                 
               </div>
             </div>
             <div class="col-1 no-padding">
-              <div *ngIf="searching" class="vertical-offset">
+              <div *ngIf="searching" class="vertical-offset"> 
                 <div class="spinner-container">
                   <div class='cssload-inner cssload-one'></div>
                   <div class='cssload-inner cssload-two'></div>
@@ -91,48 +84,20 @@ import { DeckService } from '../core/deck.service';
             </div>
           </div>
         </form>
-        <!--<form (submit)="inputData()">
-          <div class="row">
-            <div class="col-2 form-group">
-              <label for="color">Color:</label>
-              <select [(ngModel)]="selectedColor" name="color" class="form-control">
-                <option *ngFor="let i of colorOpts" [value]="i">{{i}}</option>
-              </select>
-            </div>
-    
-            <div class="col-2 form-group">
-              <label for="cost">Cost:</label>
-              <select [(ngModel)]="selectedCardCost" name="cost" class="form-control" [disabled]="selectedCardType=='Land'">
-                <option *ngFor="let i of cardCostOpts" [value]="i">{{i}}</option>
-              </select> 
-            </div>
-    
-            <div class="col-3 form-group">
-              <label for="type">Type:</label>
-              <select [(ngModel)]="selectedCardType" name="type" class="form-control" (ngModelChange)="checkCardType($event)">
-                <option *ngFor="let i of cardTypeOpts" [value]="i">{{i}}</option>
-              </select>
-            </div>
-            <div class="col-3 offset-2">
-              <!-- <button type="submit" class="btn btn-primary btn-add">Add</button> 
-              <button type="button" (click)="clearInputs()" class="btn btn-secondary btn-add">Clear Filters</button>
-            </div>
-          </div>
-        </form> -->
 
         <!-- DECK TABLE -->
         <table class="table table-fixed table-sm">
           <thead>
             <tr class="tr-border">
-            <th class="col-lg-4">Name</th>
-              <th class="col-lg-1">Color</th>
-              <th class="col-lg-2">Cost</th>
-              <th class="col-lg-3">Type</th>
-              <th class="col-lg-2">Amount</th>
+            <th class="col-4">Name</th>
+              <th class="col-1">Color</th>
+              <th class="col-2">Cost</th>
+              <th class="col-3">Type</th>
+              <th class="col-2">Amount</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let card of deckService.deck.cards">
+            <tr *ngFor="let card of deckService.deck.getCards()">
               <td class="col-4"><span class="text-link" (click)="viewCard(card)">{{card.name}}</span></td>
               <td class="col-1">{{card.color}}</td>
               <td class="col-2">{{card.cost}}</td>
@@ -147,7 +112,7 @@ import { DeckService } from '../core/deck.service';
         </table>
       </div>
       
-      <div class="col-6">
+      <div class="col-lg-6 col-md-12">
         <app-stacked-barchart *ngIf="chartData" 
           [data]="chartData" 
           [segments]="colorOpts"
@@ -176,8 +141,8 @@ import { DeckService } from '../core/deck.service';
   .inline-header{
     display: inline;
   }
-  .card-counter{
-    margin-bottom: 13px;
+  .col-card-count{
+    padding-top: 5px;
   }
 
   /*https://bootsnipp.com/snippets/oVlgM   fixed table header*/
@@ -212,7 +177,7 @@ import { DeckService } from '../core/deck.service';
 })
 export class HomeComponent implements OnInit {
   // public deck: Deck;
-  private chartData: any;
+  chartData: any;
   private chartIndices: Array<any>;
   
   private colorOpts: Array<string>;
@@ -223,13 +188,14 @@ export class HomeComponent implements OnInit {
   private selectedCardCost: string;
   private colorValues: Array<string>;
 
-  private searchedCard: any;
-  private searching = false;
-  private searchFailed = false;
+  searchedCard: any;
+  searching = false;
+  searchFailed = false;
   private hideSearchingWhenUnsubscribed = new Observable(() => () => this.searching = false);
   formatter = (x: {name: string}) => x.name;
 
-  constructor(private deckService: DeckService, private data: DataService, private modalService: NgbModal) {}
+  // TODO: redo access modifiers
+  constructor(public deckService: DeckService, private data: DataService, private modalService: NgbModal) {}
 
   ngOnInit() {
     

@@ -7,8 +7,10 @@ export class DeckService {
   public deck: Deck;
   constructor(private ngf: NgForage) { 
     this.deck = new Deck({});
+    // this.ngf.clear();
   }
   
+  // TODO: need to rewrite localstorage logic :/
 
   // set the deck in the service
   setDeck(deck: Deck){

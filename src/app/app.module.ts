@@ -3,8 +3,8 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { ChartsModule } from './charts/charts.module';
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import {NgForageModule} from "ngforage";
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgForageModule } from "ngforage";
 
 
 import { AppComponent } from './app.component';
