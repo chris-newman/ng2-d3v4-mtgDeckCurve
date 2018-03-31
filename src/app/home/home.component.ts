@@ -30,11 +30,10 @@ import { DeckService } from '../core/deck.service';
   <div class="row">
     <div class="col-12">
       <div class="row">
-        
-        <div class="col-9 col-card-count">
+        <div class="col-9">
           <h2 class="inline-header">{{deckService.deck.name}} - {{deckService.deck.getLength()}}/60 Cards </h2>
-          <button type="button" (click)="resetDeck()" class="btn btn-secondary btn-reset">Reset</button>
-          <button type="button" (click)="deckService.deck.sortAscendingCost()" class="btn btn-secondary btn-reset">Sort</button>
+          <!--<button type="button" (click)="resetDeck()" class="btn btn-secondary btn-reset">Reset</button>
+          <button type="button" (click)="deckService.deck.sortAscendingCost()" class="btn btn-secondary btn-reset">Sort</button>-->
         </div>
         <div class="col-3">
           <div class="float-right">
@@ -42,21 +41,18 @@ import { DeckService } from '../core/deck.service';
             <button type="button" (click)="loadDeck()" class="btn btn-default">Load</button>
           </div>
         </div>
-       
       </div>
     </div>
   </div>
 
   <div class="container-fluid">
-    <div class="row">
-      <div class="col-lg-6 col-md-12">
+    <div class="row small-margin-top">
+      <div class="col-lg-6 col-md-12 no-padding">
         <!-- FORM -->
         <form action="">
           <div class="row">
             <div class="col-6 no-padding-right">
               <div class="form-group">
-                <label for="typeahead-http">Search for a card by name:</label>
-
                 <input name="typeahead-http" type="text" class="form-control" 
                   [class.is-invalid]="searchFailed" [(ngModel)]="searchedCard" 
                   [ngbTypeahead]="search" placeholder="Search for a Card" [inputFormatter]="formatter"
@@ -67,7 +63,7 @@ import { DeckService } from '../core/deck.service';
               </div>
             </div>
             <div class="col-1 no-padding">
-              <div *ngIf="searching" class="vertical-offset"> 
+              <div *ngIf="searching"> 
                 <div class="spinner-container">
                   <div class='cssload-inner cssload-one'></div>
                   <div class='cssload-inner cssload-two'></div>
@@ -80,7 +76,7 @@ import { DeckService } from '../core/deck.service';
               </div>
             </div>
             <div class="col no-padding-left">
-              <button (click)="addSearchedCard()" class="btn btn-primary btn-add">Add Card</button>
+              <button (click)="addSearchedCard()" class="btn btn-primary ">Add Card</button>
             </div>
           </div>
         </form>
@@ -89,8 +85,7 @@ import { DeckService } from '../core/deck.service';
         <table class="table table-fixed table-sm">
           <thead>
             <tr class="tr-border">
-            <th class="col-4">Name</th>
-              <th class="col-1">Color</th>
+            <th class="col-5">Name</th>
               <th class="col-2">Cost</th>
               <th class="col-3">Type</th>
               <th class="col-2">Amount</th>
@@ -98,8 +93,7 @@ import { DeckService } from '../core/deck.service';
           </thead>
           <tbody>
             <tr *ngFor="let card of deckService.deck.getCards()">
-              <td class="col-4"><span class="text-link" (click)="viewCard(card)">{{card.name}}</span></td>
-              <td class="col-1">{{card.color}}</td>
+              <td class="col-5"><span class="text-link" (click)="viewCard(card)">{{card.name}}</span></td>
               <td class="col-2">{{card.cost}}</td>
               <td class="col-3">{{card.type}}</td>
               <td class="col-1">{{card.amount}}</td>
@@ -141,8 +135,9 @@ import { DeckService } from '../core/deck.service';
   .inline-header{
     display: inline;
   }
-  .col-card-count{
-    padding-top: 5px;
+
+  .small-margin-top{
+    margin-top: 15px;
   }
 
   /*https://bootsnipp.com/snippets/oVlgM   fixed table header*/
