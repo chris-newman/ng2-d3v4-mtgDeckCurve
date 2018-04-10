@@ -12,8 +12,10 @@ import { HomeComponent } from './home/home.component';
 import { routing, appRoutingProviders } from './app.routing';
 import { DataService } from './shared/data.service';
 import { CardViewerComponent } from './card-viewer/card-viewer.component';
-import { LoadSaveComponent } from './load-save/load-save.component';
+import { DeckLoaderComponent } from './load-save/load-save.component';
 import { CoreModule } from './core/core.module';
+import { DeckTesterComponent } from './deck-tester/deck-tester.component';
+import { DeckRenamerComponent } from './deck-renamer/deck-renamer.component';
 
 
 
@@ -22,7 +24,9 @@ import { CoreModule } from './core/core.module';
     AppComponent,
     HomeComponent,
     CardViewerComponent,
-    LoadSaveComponent
+    DeckLoaderComponent,
+    DeckTesterComponent,
+    DeckRenamerComponent
   ],
   imports: [
     BrowserModule,
@@ -36,6 +40,6 @@ import { CoreModule } from './core/core.module';
   ],
   providers: [appRoutingProviders, DataService],
   bootstrap: [AppComponent],
-  entryComponents: [CardViewerComponent, LoadSaveComponent]
+  entryComponents: [CardViewerComponent, DeckLoaderComponent, DeckTesterComponent, DeckRenamerComponent]
 })
 export class AppModule { }

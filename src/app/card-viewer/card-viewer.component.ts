@@ -9,9 +9,6 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap/modal/modal-ref';
     <div class="col-4">
       <img class="card-img" [src]="card.imageUrl" alt="">
     </div>
-    <div class="col no-padding-left">
-      <p>Card Details</p>
-    </div>
   </div>
   `,
   styles: [`

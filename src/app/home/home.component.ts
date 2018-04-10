@@ -16,8 +16,9 @@ import { Deck } from '../shared/deck';
 import { Card } from '../shared/card';
 import { DataService } from '../shared/data.service';
 import { CardViewerComponent } from '../card-viewer/card-viewer.component';
-import { LoadSaveComponent } from '../load-save/load-save.component';
+import { DeckLoaderComponent } from '../load-save/load-save.component';
 import { DeckService } from '../core/deck.service';
+import { DeckTesterComponent } from '../deck-tester/deck-tester.component';
 
 @Component({
   selector: 'app-home',
@@ -25,18 +26,20 @@ import { DeckService } from '../core/deck.service';
   
   <ng-template #rt let-r="result" let-t="term">
     {{ r.name}}
+    <button (click)="viewCard(r)">b</button>
   </ng-template>
 
   <div class="row">
     <div class="col-12">
       <div class="row">
         <div class="col-9">
-          <h2 class="inline-header">{{deckService.deck.name}} - {{deckService.deck.getLength()}}/60 Cards </h2>
+          <h2 class="inline-header">{{displayDeckName()}} - {{deckService.deck.getLength()}}/60 Cards </h2>
           <!--<button type="button" (click)="resetDeck()" class="btn btn-secondary btn-reset">Reset</button>
           <button type="button" (click)="deckService.deck.sortAscendingCost()" class="btn btn-secondary btn-reset">Sort</button>-->
         </div>
         <div class="col-3">
           <div class="float-right">
+            <button type="button" (click)="testDeck()" class="btn btn-success">Test</button>
             <button type="button" (click)="deckService.saveDeck(deckService.deck)" class="btn btn-default">Save</button>
             <button type="button" (click)="loadDeck()" class="btn btn-default">Load</button>
           </div>
@@ -106,7 +109,7 @@ import { DeckService } from '../core/deck.service';
         </table>
       </div>
       
-      <div class="col-lg-6 col-md-12">
+      <div class="col-lg-6 col-md-12 ">
         <app-stacked-barchart *ngIf="chartData" 
           [data]="chartData" 
           [segments]="colorOpts"
@@ -162,9 +165,13 @@ import { DeckService } from '../core/deck.service';
   }
 
   /* modal styles */
-  .dark-modal .modal-content{
+  .dark-modal .modal-content, .large-dark-modal .modal-content{
     background-color: #141011;
     color: white;
+  }
+
+  .large-dark-modal .modal-lg{
+    max-width: 1200px;
   }
   `
   ],
@@ -200,6 +207,11 @@ export class HomeComponent implements OnInit {
     this.cardCostOpts = this.deckService.deck.costOpts;
     this.colorValues = ['#f2f9f8', '#1b2223', '#107c41', '#e6452d', '#137fb8', '#cbc2bf', '#c2b26b'];
     this.resetDeck();
+  }
+
+  displayDeckName(){
+    if(this.deckService.deck.name != "") return this.deckService.deck.name;
+    return "Unsaved Deck";
   }
 
   // watch the input value of card type
@@ -287,20 +299,31 @@ export class HomeComponent implements OnInit {
   viewCard(card: Card){
     const modalRef = this.modalService.open(CardViewerComponent, {
       windowClass: 'dark-modal',
-      size: 'lg'
+      size: 'sm'
     });
     modalRef.componentInstance.card = card;
   }
 
+  testDeck(){
+    const modalRef = this.modalService.open(DeckTesterComponent, {
+      windowClass: 'large-dark-modal',
+      size: 'lg'
+    });
+  }
+
   loadDeck(){
-    const modalRef = this.modalService.open(LoadSaveComponent, {
+    const modalRef = this.modalService.open(DeckLoaderComponent, {
       // windowClass: 'dark-modal',
       size: 'lg'
     });
     // modalRef.componentInstance.card = card;
     modalRef.result.then(() => {
       this.updateChartData();
-    });
+    })
+    .catch((err) => {
+      if(err != 0) console.log(err);
+    })
+    ;
   }
       
 }

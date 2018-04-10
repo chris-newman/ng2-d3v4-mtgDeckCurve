@@ -9,7 +9,7 @@ export class Deck {
   private cards: Array<Card>;
 
   constructor(deckInfo:any) {
-    this.name = deckInfo.name || 'Unnamed Deck';
+    this.name = deckInfo.name || "";
     this.cards = deckInfo.cards || [];
   }
 
@@ -105,17 +105,27 @@ export class Deck {
 
   sortAscendingCost(){
     this.cards.sort(compareCost);
-
     function compareCost(a, b) {
       if (a.cost < b.cost) return -1;
-
       if (a.cost > b.cost) return 1;
-
       return 0;
     }
   }
 
-  
+  // returns an array of single cards (instead of cards with an amount)
+  makePlayDeck(){
+    let playDeck = [];
+    // loop through each card in the deck
+    for (let index = 0; index < this.cards.length; index++) {
+      const card = this.cards[index];
+      const amount = card["amount"];
+      // add singleton card to playDeck
+      for (let x = 0; x < amount; x++) {
+        playDeck.push(card);
+      }
+    }
+    return playDeck;
+  }  
 
   // csv formatted string representation of deck
   toString(){

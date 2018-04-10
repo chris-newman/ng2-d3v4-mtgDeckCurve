@@ -8,7 +8,8 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
   template: `
     
     <div class="modal-header">
-      <h4 class="modal-title">Saved Decks</h4>
+      <h4 class="modal-title">Saved Decks</h4> 
+      <!--<button (click)="deckService.clearAllDecks()">Clear all Decks</button>-->
       <!--<button type="button" class="close" (click)="modal.close()"></button>-->
     </div>
 
@@ -27,16 +28,12 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
               <td class="col-3"> </td>
               <td class="col-4">
                 <button class="btn btn-primary" (click)="setDeck(deck)">Load</button>
-                <button class="btn btn-secondary">Copy</button>
+                <!--<button class="btn btn-secondary">Copy</button>-->
                 <button class="btn btn-danger" (click)="deleteDeck(deck)">Delete</button>
               </td>
             </tr>
           </tbody>
         </table>
-
-    <!--<div class="modal-body">
-      <p *ngFor="let deck of decks;" (click)="setDeck(deck)">{{deck.name}} - {{deck.getLength()}}</p>
-    </div> -->
     
   `,
   styles: [`
@@ -46,7 +43,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
   `
   ]
 })
-export class LoadSaveComponent implements OnInit {
+export class DeckLoaderComponent implements OnInit {
   decks: Array<Deck>;
   constructor(private deckService: DeckService, public modal: NgbActiveModal) { }
 
@@ -57,7 +54,7 @@ export class LoadSaveComponent implements OnInit {
   getDecks(){
     this.deckService.getDecks().then((decks : Array<Deck>) => {
       this.decks = decks;
-      console.log(this.decks);
+      // console.log(this.decks);
     })
   }
 
