@@ -112,6 +112,15 @@ export class Deck {
     }
   }
 
+  sortAscendingName(){
+    this.cards.sort(compareName);
+    function compareName(a, b) {
+      if (a.name < b.name) return -1;
+      if (a.name > b.name) return 1;
+      return 0;
+    }
+  }
+
   // returns an array of single cards (instead of cards with an amount)
   makePlayDeck(){
     let playDeck = [];

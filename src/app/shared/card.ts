@@ -61,6 +61,7 @@ export class Card {
     */
       if(!manaCost) return 0;
       // convert string an array
+      manaCost = manaCost.replace(/\//g, ""); // account for {R/P} where life can be paid instead
       manaCost = manaCost.replace(/{/g, "");
       manaCost = manaCost.replace(/}/g, ",");
       const manaArr = manaCost.split(',');
@@ -73,10 +74,15 @@ export class Card {
         const element = manaArr[i];
         switch (element) {
           case 'W': sum ++; break;
+          case 'WP': sum ++; break;
           case 'B': sum ++; break;
+          case 'BP': sum ++; break;
           case 'R': sum ++; break;
+          case 'RP': sum ++; break;
           case 'G': sum ++; break;
+          case 'GP': sum ++; break;
           case 'U': sum ++; break;
+          case 'UP': sum ++; break;
           default:  sum += +element;  break; // number
         }
       }

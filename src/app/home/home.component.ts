@@ -35,7 +35,7 @@ import { DeckTesterComponent } from '../deck-tester/deck-tester.component';
         <div class="col-9">
           <h2 class="inline-header">{{displayDeckName()}} - {{deckService.deck.getLength()}}/60 Cards </h2>
           <!--<button type="button" (click)="resetDeck()" class="btn btn-secondary btn-reset">Reset</button>
-          <button type="button" (click)="deckService.deck.sortAscendingCost()" class="btn btn-secondary btn-reset">Sort</button>-->
+          --><button type="button" (click)="deckService.deck.sortAscendingName()" class="btn btn-secondary btn-reset">Sort</button>
         </div>
         <div class="col-3">
           <div class="float-right">
@@ -99,10 +99,10 @@ import { DeckTesterComponent } from '../deck-tester/deck-tester.component';
               <td class="col-5"><span class="text-link" (click)="viewCard(card)">{{card.name}}</span></td>
               <td class="col-2">{{card.cost}}</td>
               <td class="col-3">{{card.type}}</td>
-              <td class="col-1">{{card.amount}}</td>
-              <td class="col-1">
+              <td class="col-2">{{card.amount}}
                 <a (click)="deleteCard(card)" href="javascript:void(0)" class="badge badge-danger"> - </a>
-                <a (click)="addCardToDeck(card)" href="javascript:void(0)" class="badge badge-success">+</a>
+                <a (click)="addCardToDeck(card)" href="javascript:void(0)" class="badge badge-primary">+</a>
+                <a (click)="goToShop(card.name)" href="javascript:void(0)" class="badge badge-success">$</a>
               </td>
             </tr>
           </tbody>
@@ -171,7 +171,7 @@ import { DeckTesterComponent } from '../deck-tester/deck-tester.component';
   }
 
   .large-dark-modal .modal-lg{
-    max-width: 1200px;
+    max-width: 1050px;
   }
   `
   ],
@@ -237,6 +237,13 @@ export class HomeComponent implements OnInit {
 
     let card = new Card(input);
     this.addCardToDeck(card);
+  }
+
+  // $ button function
+  goToShop(cardName){
+    // prep card name
+    const _cardName = cardName.replace(/\s/g, "%20");
+    window.open("https://shop.tcgplayer.com/productcatalog/product/show?newSearch=false&ProductType=All&IsProductNameExact=false&ProductName="+_cardName, "_blank");
   }
 
   // wip

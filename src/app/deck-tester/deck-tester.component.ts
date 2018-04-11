@@ -7,11 +7,19 @@ import { DeckService } from '../core/deck.service';
   template: `
   <div class="card">
     <div class="card-header">
-        <h1>Deck Tester</h1>
+        <h1>Deck Tester - Turn {{turnCount}} (-1 if you went 2nd)</h1>
     </div>
     <div class="card-body">
-      <h4>Cards left in Deck: {{testDeck.length}}</h4>
       <div class="container-fluid">
+        <h4>Field</h4>
+        <div class="row">
+          <div class="col col-full" *ngFor="let card of testField">
+            <img class="img-half-size" [src]="card.imageUrl" alt="">
+          </div>
+        </div>
+      </div>
+      <div class="container-fluid">
+        <h4>Hand</h4>
         <div class="row">
           <div class="col col-full" *ngFor="let card of testHand; let i = index">
             <img class="img-half-size" [src]="card.imageUrl" (click)="playOne(i)" alt="">
@@ -24,11 +32,12 @@ import { DeckService } from '../core/deck.service';
       <button class="btn btn-dark" (click)="newHand()">New Hand</button>
       <button class="btn btn-dark" (click)="mulligan()">Mulligan</button>
       <button class="btn btn-primary" (click)="drawOne()">Draw One</button>
+      <span>Cards left in Deck: {{testDeck.length}}</span>
     </div>
   </div>
   `,
   styles: [`
-    th, td, h1, p, li, h4 {
+    th, td, h1, p, li, h4, span {
       color: black;
     }
     .inline{
@@ -49,18 +58,26 @@ import { DeckService } from '../core/deck.service';
   `]
 })
 export class DeckTesterComponent implements OnInit {
-
   displayDeckLength: number;
+  turnCount: number;
   testHand: Array<any>;
   testDeck: Array<any>;
+  testField: Array<any>;
   mulliganCount: number;
   selectedCard: any;
 
   constructor(public activeModal: NgbActiveModal, private deckService: DeckService) { }
 
   ngOnInit() {
+    this.resetBoardState();
     this.displayDeckLength = this.deckService.deck.getLength();
     this.newHand();
+  }
+
+  private resetBoardState(){
+    this.turnCount = 1;
+    this.testField = [];
+    this.selectedCard = null;
     this.mulliganCount = 0;
   }
 
@@ -69,15 +86,16 @@ export class DeckTesterComponent implements OnInit {
   }
 
   newHand() {
-    this.selectedCard = null;
+    this.resetBoardState();
+
     this.shuffleTestDeck();
     console.log(this.testDeck);
     this.testHand = this.testDeck.splice(-7, 7);
     console.log(this.testHand);
-    this.mulliganCount = 0;
   }
 
   drawOne() {
+    this.turnCount++;
     const card = this.testDeck.pop();
     console.log(card);
     this.testHand.push(card);
@@ -87,10 +105,14 @@ export class DeckTesterComponent implements OnInit {
 
   playOne(index){
     console.log(index)
-    this.testHand.splice(index, 1);
+    let card = this.testHand.splice(index, 1)[0];
+    this.testField.push(card);
+    console.log(card);
+    console.log(this.testField);
   }
 
   mulligan() {
+    this.testField = [];
     this.selectedCard = null;
     if(this.mulliganCount >= 2) return;  
     this.mulliganCount ++;

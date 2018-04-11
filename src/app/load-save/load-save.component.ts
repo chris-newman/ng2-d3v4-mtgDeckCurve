@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DeckService } from '../core/deck.service';
 import { Deck } from '../shared/deck';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import * as _ from "lodash";
 
 @Component({
   selector: 'app-load-save',
@@ -28,7 +29,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
               <td class="col-3"> </td>
               <td class="col-4">
                 <button class="btn btn-primary" (click)="setDeck(deck)">Load</button>
-                <!--<button class="btn btn-secondary">Copy</button>-->
+                <button class="btn btn-dark" (click)="copyDeck(deck)">Copy</button>
                 <button class="btn btn-danger" (click)="deleteDeck(deck)">Delete</button>
               </td>
             </tr>
@@ -65,12 +66,23 @@ export class DeckLoaderComponent implements OnInit {
     this.modal.close();
   }
 
+  copyDeck(deck){
+    let newDeck = _.cloneDeep<Deck>(deck);
+    newDeck.restoreCards();
+    this.deckService.setDeck(newDeck);
+    this.deckService.deck.name = ""; // trigger save as modal
+    this.deckService.saveDeck(newDeck);
+    this.modal.close();
+  }
+
   deleteDeck(deck){
     console.log('deletedeck in component called');
-    this.deckService.deleteDeck(deck).then(() => {
-      this.getDecks();
-      return;
-    })
+    if (confirm("Are you sure you want to delete this deck?")) {
+      this.deckService.deleteDeck(deck).then(() => {
+        this.getDecks();
+        return;
+      })
+    }
   }
 
 
