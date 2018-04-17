@@ -108,6 +108,16 @@ export class DeckTesterComponent implements OnInit {
     let card = this.testHand.splice(index, 1)[0];
     this.testField.push(card);
     console.log(card);
+    if(card.name == 'Grave Upheaval'){
+      if(confirm("Do you want to basic land cycle")){
+        this.searchForBasicLand('hand');
+      }
+    }
+    else if (card.name == 'Evolving Wilds'){
+      if(confirm("Do you want to search for basic land")){
+        this.searchForBasicLand('field');
+      }
+    }
     console.log(this.testField);
   }
 
@@ -119,6 +129,22 @@ export class DeckTesterComponent implements OnInit {
     this.shuffleTestDeck();
     this.testHand = this.testDeck.splice(0, 7 - this.mulliganCount);
     // TODO: scry(1)
+  }
+
+  searchForBasicLand(handOrField){
+    for (let i = 0; i < this.testDeck.length; i++) {
+      const card = this.testDeck[i];
+      if(card.name == 'Mountain' || card.name == 'Swamp' || card.name == 'Forest' || card.name == 'Island' || card.name == 'Plains'){
+        let drawnCard = this.testDeck.splice(i, 1)[0];   
+        if(handOrField == 'hand'){
+          this.testHand.push(drawnCard);
+        }
+        else if(handOrField == 'field'){
+          this.testField.push(drawnCard);
+        }
+        break;
+      }
+    }
   }
 
   private shuffleTestDeck() {
