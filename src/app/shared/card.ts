@@ -83,6 +83,7 @@ export class Card {
           case 'GP': sum ++; break;
           case 'U': sum ++; break;
           case 'UP': sum ++; break;
+          case 'X': sum += 3; break; // X cost spells should be fairly high in the curve
           default:  sum += +element;  break; // number
         }
       }
