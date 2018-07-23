@@ -49,7 +49,12 @@ export class Card {
       }
     }
 
-    function parseCost(manaCost){
+    /**
+     * Parses the manaCost string data of a card. 
+     * @param manaCost - the manaCost string data
+     * @returns result - The total cost 
+     */
+    function parseCost(manaCost: string){
     /* NOTE: color identies
       W: white
       U: blue
